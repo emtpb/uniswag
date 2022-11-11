@@ -63,7 +63,7 @@ import "."
 */
 
 ApplicationWindow {
-    title: qsTr("MS-SWAG")
+    title: qsTr("UniSWAG")
     visible: true
     visibility: "Maximized"
     width: 1400
