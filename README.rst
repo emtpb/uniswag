@@ -19,7 +19,7 @@ Most prominent features are:
 - Runs on both *Linux* and *Windows*
 
 Usage
-----------------------
+-----
 
 After package installation you can launch the application via the command line:
 
@@ -35,7 +35,7 @@ the collection of compatible devices without much of a hassle by
 following these 5 steps:
 
 1. Have a look at what functionalities you need: ``gen_properties.py`` & ``osc_properties.py``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First determine, whether the device you want to add is of the type
 *signal generator* (from now on abbreviated simply as *generator*) or
@@ -85,7 +85,7 @@ implement all abstract methods, as well as the desired subset of getters
 provided class variables, mutexes, methods, etc.
 
 3. Enable the *Device Manager* to create objects of your new interface: ``device_manager.py``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In order to let the *Device Manager* create instances of the newly
 implemented interface to your device, you’ll need to update
@@ -108,7 +108,7 @@ interface to ``added_devices``. Remember to pass
 ``self._device_stopped`` to your constructor if it’s an oscilloscope.
 
 4. Make the *USB Daemon* recognize your device: ``usb_device_daemon.py``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The *USB Daemon* monitors the *USB* ports of the computer for events
 caused by plugging devices in or out. If one of those devices happens to
