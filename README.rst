@@ -1,5 +1,5 @@
 Universal Signal Waveform Acquisition & Generation
-================================================================
+==================================================
 
 A *GUI*-based software for controlling oscilloscopes and signal
 generators from a variety of vendors. Supported devices include:
@@ -153,10 +153,11 @@ cases.
 Remember to do these two updates within the case
 ``'IVI Foundation, Inc' in dev_vendor_info and platform == 'win32'`` if
 your device uses the *VISA* interface, because it won’t be recognized on
-*Windows* otherwise: \* Add the vendor’s name to the
-``known_visa_vendors`` list \* Map the new entry in
-``known_visa_vendors`` to the *Manufacturer ID* by extending the
-following snippet with another ``elif``:
+*Windows* otherwise:
+
+- Add the vendor’s name to the ``known_visa_vendors`` list
+- Map the new entry in ``known_visa_vendors`` to the *Manufacturer ID* by extending
+  the following snippet with another ``elif``:
 
 ::
 

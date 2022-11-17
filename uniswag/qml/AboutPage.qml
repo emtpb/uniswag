@@ -2,7 +2,7 @@ import QtQuick 2.4
 import QtQuick.Layouts 2.4
 import QtQuick.Window 2.4
 import QtQuick.Controls 2.4
-import QtWebEngine 1.0
+
 
 ApplicationWindow {
     width: 500; height: 500

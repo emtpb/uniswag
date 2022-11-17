@@ -52,6 +52,9 @@ class TiepieOsc(Oscilloscope):
         # halt the oscilloscope's measurement initially
         self._should_run = False
 
+        # Fetch the data from the device after the device is already stopped again
+        self._data_not_fetched_from_last_run = False
+
         # start the thread that continuously retrieves new measurement data while the oscilloscope is running
         self._new_data_retrieval_thread.start()
 
@@ -65,8 +68,10 @@ class TiepieOsc(Oscilloscope):
 
             # retrieve new measurement data from the oscilloscope if it is currently running
             self._mutex_dev_access.acquire()
-            if self._osc.is_running:
+            if self._osc.is_running or self._data_not_fetched_from_last_run:
                 self._mutex_dev_access.release()
+
+                self._data_not_fetched_from_last_run = False
 
                 self._mutex_dev_access.acquire()
 
@@ -170,6 +175,7 @@ class TiepieOsc(Oscilloscope):
                             break
                     if not all_channels_disabled:
                         self._osc.start()
+                        self._data_not_fetched_from_last_run = True
                     else:
                         self._should_run = False
 
@@ -203,6 +209,8 @@ class TiepieOsc(Oscilloscope):
         success = False
         all_channels_disabled = True
 
+        measure_mode = self.measure_mode
+
         # assert that the oscilloscope is not currently mid-measurement
         self._mutex_running.acquire()
 
@@ -217,6 +225,9 @@ class TiepieOsc(Oscilloscope):
                     all_channels_disabled = False
                     break
             if not all_channels_disabled:
+                if measure_mode == 'block':
+                    self._data_not_fetched_from_last_run = True
+
                 self._osc.start()
                 self._should_run = True
                 success = True

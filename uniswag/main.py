@@ -4,7 +4,6 @@ import sys
 from os import path
 
 from PySide6.QtQml import QQmlApplicationEngine
-from PySide6.QtWebEngineQuick import QtWebEngineQuick
 from PySide6.QtWidgets import QApplication
 
 from uniswag.device_properties.gen_properties import GenProperties
@@ -20,8 +19,6 @@ def main():
     app = QApplication(sys.argv)
     engine = QQmlApplicationEngine()
 
-    # https://doc.qt.io/qt-6/qtwebengine-overview.html
-    QtWebEngineQuick.initialize()
 
     front_to_back_connector = FrontToBackConnector()
     osc_properties = OscProperties(front_to_back_connector)

@@ -275,6 +275,8 @@ GridLayout {
     ComboBox {
         id: frequency
         model: ListModel{
+            ListElement { text: "200 MHz" }
+            ListElement { text: "150 MHz" }
             ListElement { text: "100 MHz" }
             ListElement { text: "50 MHz" }
             ListElement { text: "25 MHz" }
@@ -333,6 +335,9 @@ GridLayout {
     ComboBox {
         id: recordLength
         model: ListModel{
+            ListElement { text: "50 MSam" }
+            ListElement { text: "1 MSam" }
+            ListElement { text: "500 kSam" }
             ListElement { text: "100 kSam" }
             ListElement { text: "50 kSam" }
             ListElement { text: "20 kSam" }
@@ -348,19 +353,24 @@ GridLayout {
         editable: true
 
         onActivated: {
-            let value = currentText.replace(" kSam", "000").replace(" Sam", "")
+            let value = currentText.replace(" MSam", "000000").replace(" kSam", "000").replace(" Sam", "")
             OscProperties._rec_len(value)
             updateDisplayedOscData()
         }
         onAccepted: {
             let value = editText
-            if(editText.includes("kSam")){
+            if(editText.includes("MSam")){
+                value = editText.replace(" MSam", "")
+                value = parseFloat(value)*1000000
+            }
+            else if(editText.includes("kSam")){
                 value = editText.replace(" kSam", "")
                 value = parseFloat(value)*1000
             }
             else if(editText.includes("Sam")){
                 value = editText.replace(" Sam", "")
             }
+
             OscProperties._rec_len(value)
             updateDisplayedOscData()
 
@@ -534,7 +544,7 @@ GridLayout {
         function onRecLen(device_id, value) {
             if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
                 //recordLength.currentIndex = findNearestIndexOfModel(recordLength.model, value)
-                let units = ["Sam", "kSam"]
+                let units = ["Sam", "kSam", "MSam"]
                 let index = 0
                 let multiplier = 1000
                 for(let i=0; i<units.length; i++){
