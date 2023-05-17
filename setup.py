@@ -30,13 +30,15 @@ setup(
 
     # Runtime dependencies
     install_requires=[
-        'PySide6',
+        'keysightosc',
         'numpy',
-        'scipy',
+        'PySide6',
         'pyusb',
+        'scipy',
+        'tektronixsg',
         'pyudev; sys_platform=="linux"',
-        'wmi; sys_platform=="win32"',
         'pyvisa-py; sys_platform=="win32"',
+        'wmi; sys_platform=="win32"',
     ],
 
     # Python version requirement
