@@ -10,7 +10,7 @@ elif platform == 'win32':
 import threading
 import time
 import queue
-import tiepie
+import handyscope
 import keysightosc
 import tektronixsg
 
@@ -221,7 +221,7 @@ class USBDeviceDaemon:
 
                         # try to detect all currently connected devices of this vendor in a time frame of 10 seconds
                         dev_list_raw = self._get_non_formatted_device_list(
-                            tiepie.DeviceList().get_overview, registered_dev_list, 10)
+                            handyscope.DeviceList().get_overview, registered_dev_list, 10)
 
                         # prettify the list of all currently connected devices of this vendor
                         dev_list_formatted = []

@@ -1,4 +1,4 @@
-import tiepie
+import handyscope
 
 from uniswag.devices.generator import Generator, GenChannel
 
@@ -8,8 +8,8 @@ class TiepieGen(Generator):
         """
         A TiePie engineering Handyscope interface, inherits from Generator.
 
-        The interface connects to and communicates with a generator object from the "tiepie" library.
-        This "tiepie" generator object is stored in a private attribute.
+        The interface connects to and communicates with a generator object from the "handyscope" library.
+        This "handyscope" generator object is stored in a private attribute.
 
         Args:
             name (str):
@@ -26,7 +26,7 @@ class TiepieGen(Generator):
         super().__init__('Tiepie', name, ser_no)
 
         # create the library-specific generator object which to interface with
-        self._gen = tiepie.Generator(instr_id=int(ser_no), id_kind='serial number')
+        self._gen = handyscope.Generator(instr_id=int(ser_no), id_kind='serial number')
 
         # fill the generator's channel list
         self._ch.append(TiepieGenChannel('Channel', 1, self._mutex_dev_access, self._gen))
@@ -89,8 +89,8 @@ class TiepieGenChannel(GenChannel):
         """
         A TiePie engineering Handyscope channel interface, inherits from GenChannel.
 
-        The interface connects to and communicates with a generator object from the "tiepie" library.
-        This "tiepie" generator object is stored in a private attribute.
+        The interface connects to and communicates with a generator object from the "handyscope" library.
+        This "handyscope" generator object is stored in a private attribute.
 
         Args:
             name (str):
@@ -101,7 +101,7 @@ class TiepieGenChannel(GenChannel):
                 Used for the 'No' part of the channel's ID.
             mutex (threading.Lock):
                 The same threading lock that is used for every other property access to the associated device.
-            gen (tiepie.Generator):
+            gen (handyscope.Generator):
                 The library-specific generator object which to interface with.
 
         Returns:

@@ -1,4 +1,4 @@
-import tiepie
+import handyscope
 from PySide6.QtCore import QPointF
 
 from uniswag.devices.oscilloscope import Oscilloscope, OscChannel
@@ -9,8 +9,8 @@ class TiepieOsc(Oscilloscope):
         """
         A TiePie engineering Handyscope interface, inherits from Oscilloscope.
 
-        The interface connects to and communicates with an oscilloscope object from the "tiepie" library.
-        This "tiepie" oscilloscope object is stored in a private attribute.
+        The interface connects to and communicates with an oscilloscope object from the "handyscope" library.
+        This "handyscope" oscilloscope object is stored in a private attribute.
 
         Args:
             name (str):
@@ -30,7 +30,7 @@ class TiepieOsc(Oscilloscope):
         super().__init__('Tiepie', name, ser_no, was_stopped_callback)
 
         # create the library-specific oscilloscope object which to interface with
-        self._osc = tiepie.Oscilloscope(instr_id=int(ser_no), id_kind='serial number')
+        self._osc = handyscope.Oscilloscope(instr_id=int(ser_no), id_kind='serial number')
 
         # fill the oscilloscope's channel list
         i = 0
@@ -661,8 +661,8 @@ class TiepieOscChannel(OscChannel):
         """
         A TiePie engineering Handyscope channel interface, inherits from OscChannel.
 
-        The interface connects to and communicates with an oscilloscope channel object from the "tiepie" library.
-        This "tiepie" oscilloscope channel object is stored in a private attribute.
+        The interface connects to and communicates with an oscilloscope channel object from the "handyscope" library.
+        This "handyscope" oscilloscope channel object is stored in a private attribute.
 
         Args:
             name (str):
@@ -673,7 +673,7 @@ class TiepieOscChannel(OscChannel):
                 Used for the 'No' part of the channel's ID.
             mutex (threading.Lock):
                 The same threading lock that is used for every other property access to the associated device.
-            ch (tiepie.oscilloscopeChannel.OscilloscopeChannel):
+            ch (handyscope.oscilloscopeChannel.OscilloscopeChannel):
                 The library-specific channel object which to interface with.
 
         Returns:
