@@ -1,191 +1,123 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import "./../../res/customtypes"
 
-GridLayout {
-    columns: 4
-    columnSpacing: 10
+UniswagOscChSettingsBar {
+    id: settingsBar
 
-    signal reloadOscChannelSettings()
-
-    property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-    Label {
-        id: operand1Label
-        text: "1st Operand"
-    }
-    Label {
-        id: operatorLabel
-        text: "Operator"
-    }
-    Label {
-        id: operand2Label
-        text: "2nd Operand"
-    }
-    Label {
-        id: shiftLabel
-        text: "Time Shift (2nd Operand)"
-    }
-
-    // Operand 1
-    ComboBox {
-        id: operand1
-        model: ListModel{}
-        onActivated: {
-            OscProperties._operand1(currentText)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: operand1Label.width + 200
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Operator
-    ComboBox {
-        id: operator
-        model: ListModel{}
-        onActivated: {
-            OscProperties._operator(currentText)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: operatorLabel.width + 30
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Operand 2
-    ComboBox {
-        id: operand2
-        model: ListModel{}
-        onActivated: {
-            OscProperties._operand2(currentText)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: operand2Label.width + 200
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Shift
-    TextField {
-        id: shift
-        onAccepted: {
-            OscProperties._shift(text)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: shiftLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    onReloadOscChannelSettings: {
-        reloadChannelSettings()
-    }
-
-    function reloadChannelSettings(){
+    onReloadOscChannelSettings: function() {
         OscProperties._operands_avail()
         OscProperties._operators_avail()
         OscProperties._shift(NaN)
     }
 
-    function updateDisplayedChannelData(){
-        reloadChannelSettings()
-        oscilloscopeMainRect.reloadOscilloscopeSettings()
+    onTriggerSliderPositionChanged: function(position) {
     }
 
-
-    Component.onCompleted: {
-        updateDisplayedChannelData()
+    onZoomed: function() {
     }
 
+    RowLayout {
+
+        UniswagCombobox {
+            id: operand1
+
+            labelText: "1st Operand"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._operand1(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCombobox {
+            id: operator
+
+            labelText: "Operator"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._operator(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCombobox {
+            id: operand2
+
+            labelText: "2nd Operand"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._operand2(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: shift
+
+            labelText: "Time Shift (2nd Operand)"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._shift(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+    }
 
     Connections {
         target: OscProperties
 
-        // Operand 1
-        function onOperand1(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                let modelIndex = findIndexOfModel(operand1.model, value)
-                if (modelIndex != -1) {
-                    operand1.currentIndex = modelIndex
-                }
-            }
-        }
-        // Operand 2
-        function onOperand2(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                let modelIndex = findIndexOfModel(operand2.model, value)
-                if (modelIndex != -1) {
-                    operand2.currentIndex = modelIndex
-                }
-            }
-        }
-        // Both Operands
-        function onOperandsAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                operand1.model = value
-                operand2.model = value
-            }
-        }
-
-        // Operator
         function onOperator(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                let modelIndex = findIndexOfModel(operator.model, value)
-                if (modelIndex != -1) {
-                    operator.currentIndex = modelIndex
-                }
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxSelection(operator, value)
         }
         function onOperatorsAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                operator.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(operator, value)
         }
 
-        // Shift
+        function onOperand1(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxSelection(operand1, value)
+        }
+        function onOperand2(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxSelection(operand2, value)
+        }
+        function onOperandsAvail(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxList(operand1, value)
+            functions.updateComboboxList(operand2, value)
+        }
+
         function onShift(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                shift.text = ""
-                shift.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(shift, value)
         }
-
     }
 
     Connections {
         target: FrontToBackConnector
 
         function onReloadMathChProp(device_id, ch_num) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                updateDisplayedChannelData()
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            settingsBar.updateDisplayedChannelData()
         }
-
     }
+
 }

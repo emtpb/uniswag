@@ -670,7 +670,7 @@ class GenProperties(QtCore.QObject):
     def _burst_cnt_thread(self, device, channel, value):
         # filter out empty or non-Int-like input
         try:
-            value = int(value)
+            value = int(float(value))
         except (TypeError, ValueError):
             value = None
 
@@ -686,7 +686,7 @@ class GenProperties(QtCore.QObject):
     def _burst_sample_cnt_thread(self, device, channel, value):
         # filter out empty or non-Int-like input
         try:
-            value = int(value)
+            value = int(float(value))
         except (TypeError, ValueError):
             value = None
 
@@ -702,7 +702,7 @@ class GenProperties(QtCore.QObject):
     def _burst_seg_cnt_thread(self, device, channel, value):
         # filter out empty or non-Int-like input
         try:
-            value = int(value)
+            value = int(float(value))
         except (TypeError, ValueError):
             value = None
 

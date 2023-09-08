@@ -1,108 +1,57 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import "./../../res/customtypes"
 
-GridLayout {
-    signal reloadOscilloscopeSettings()
+UniswagOscDevSettingsBar {
+    id: settingsBar
 
-    property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-    columns: 3
-    columnSpacing: 10
-
-    Label {
-        id: startStopLabel
-        text: "Start/Stop"
-    }
-    Label {
-        id: addChLabel
-        text: "Add Channel"
-    }
-    Label {
-        id: removeChLabel
-        text: "Remove Channel"
-    }
-
-
-    // Start/Stop
-    Button {
-        id: startStop
-        text: ""
-        onClicked: OscProperties._start_n_stop()
-
-        background: Rectangle {
-            implicitWidth: startStopLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Add Channel
-    Button {
-        id: addCh
-        text: "+ 1"
-        onClicked: OscProperties._add_ch()
-
-        background: Rectangle {
-            implicitWidth: addChLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Remove Channel
-    Button {
-        id: removeCh
-        text: "- 1"
-        onClicked: OscProperties._remove_ch()
-
-        background: Rectangle {
-            implicitWidth: removeChLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    onReloadOscilloscopeSettings: {
-        reloadOscSettings()
-    }
-
-    function reloadOscSettings(){
+    onReloadOscilloscopeSettings: function() {
         OscProperties._is_running()
+
+        // Trigger Kinds not supported
+        functions.triggerSliderIconUpdate()
     }
 
-    function updateDisplayedOscData(){
-        reloadOscSettings()
-        oscilloscopeMainRect.reloadOscChannelSettings()
+    RowLayout {
+
+        UniswagButton {
+            id: startStop
+
+            labelText: "Start/Stop"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                OscProperties._start_n_stop()
+            }
+        }
+
+        UniswagButton {
+            labelText: "Add Channel"
+            buttonText: "+ 1"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                OscProperties._add_ch()
+            }
+        }
+
+        UniswagButton {
+            labelText: "Remove Channel"
+            buttonText: "- 1"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                OscProperties._remove_ch()
+            }
+        }
+
     }
-
-
-    Component.onCompleted: {
-       updateDisplayedOscData()
-    }
-
 
     Connections {
         target: OscProperties
 
         function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
         }
     }
 
@@ -110,15 +59,11 @@ GridLayout {
         target: FrontToBackConnector
 
         function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
         }
-
     }
+
 }

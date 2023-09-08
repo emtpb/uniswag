@@ -1,353 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import "./../../res/customtypes"
 
-GridLayout {
-    signal reloadOscilloscopeSettings()
+UniswagOscDevSettingsBar {
+    id: settingsBar
 
-     property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-    columns: 11
-    columnSpacing: 10
-
-    // Segment Count not supported
-    // Trigger Delay not supported
-    // Trigger Hold Off not supported
-
-    Label {
-        id: clockSourceLabel
-        text: "Clock Source"
-    }
-
-    Label {
-        id: clockOutputLabel
-        text: "Clock Output"
-    }
-
-    Label {
-        id: resLabel
-        text: "ADU Resolution"
-    }
-
-    Label {
-        id: autoResLabel
-        text: "ADU Auto Resolution"
-    }
-    Label {
-        id: forceTriggerLabel
-        text: "Trigger"
-    }
-    Label {
-        id: triggerTimeoutLabel
-        text: "Trigger Timeout"
-    }
-    Label {
-        id: preSampleRatioLabel
-        text: "Pre Sample Ratio"
-    }
-    Label {
-        id: frequencyLabel
-        text: "Frequency"
-    }
-    Label {
-        id: recordLengthLabel
-        text: "Record length"
-    }
-    Label {
-        id: measureModeLabel
-        text: "Measure Mode"
-    }
-    Label {
-        id: startStopLabel
-        text: "Start/Stop"
-    }
-
-
-
-    // Clock Source
-    ComboBox {
-        id: clockSource
-        model: ListModel{}
-        onActivated: {
-            OscProperties._clock_src(currentText)
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: clockSourceLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Clock Output
-    ComboBox {
-        id: clockOutput
-        model: ListModel{}
-        onActivated: {
-            OscProperties._clock_out(currentText)
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: clockOutputLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // ADU Resolution
-    ComboBox {
-        id: res
-        model: ListModel{}
-        onActivated: {
-            OscProperties._res(currentText)
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: resLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // ADU Auto Resolution
-    ComboBox {
-        id: autoRes
-        model: ListModel{}
-        onActivated: {
-            OscProperties._auto_res(currentText)
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: autoResLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Force trigger
-    Button {
-        id: forceTrigger
-        text: "Force"
-        onClicked: {
-            OscProperties._force_trig()
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: forceTriggerLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Trigger Timeout
-    TextField {
-        id: triggerTimeout
-        onAccepted: {
-            OscProperties._trig_timeout(text)
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: triggerTimeoutLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Pre Sample Ratio
-    TextField {
-        id: preSampleRatio
-        onAccepted: {
-            OscProperties._pre_sample_ratio(text)
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: preSampleRatioLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Frequency
-    ComboBox {
-        id: frequency
-        model: ListModel{
-            ListElement { text: "100 MHz" }
-            ListElement { text: "50 MHz" }
-            ListElement { text: "25 MHz" }
-            ListElement { text: "10 MHz" }
-            ListElement { text: "5 MHz" }
-            ListElement { text: "1 MHz" }
-            ListElement { text: "100 kHz" }
-            ListElement { text: "50 kHz" }
-            ListElement { text: "25 kHz" }
-            ListElement { text: "10 kHz" }
-            ListElement { text: "5 kHz" }
-            ListElement { text: "1 kHz" }
-            ListElement { text: "500 Hz" }
-            ListElement { text: "200 Hz" }
-            ListElement { text: "100 Hz" }
-            ListElement { text: "50 Hz" }
-        }
-        editable: true
-
-        onActivated: {
-            let value = currentText.replace(" MHz", "000000").replace(" kHz", "000").replace(" Hz", "")
-            OscProperties._sample_freq(value)
-            updateDisplayedOscData()
-        }
-
-        onAccepted: {
-            let value = editText
-            if(editText.includes("MHz")){
-                value = editText.replace(" MHz", "")
-                value = parseFloat(value)*1000000
-            }
-            else if(editText.includes("kHz")){
-                value = editText.replace(" kHz", "")
-                value = parseFloat(value)*1000
-            }
-            else if(editText.includes("Hz")){
-                value = editText.replace(" Hz", "")
-            }
-            OscProperties._sample_freq(value)
-            updateDisplayedOscData()
-        }
-
-
-        background: Rectangle {
-            implicitWidth: frequencyLabel.width + 40
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Record length
-    ComboBox {
-        id: recordLength
-        model: ListModel{
-            ListElement { text: "100 kSam" }
-            ListElement { text: "50 kSam" }
-            ListElement { text: "20 kSam" }
-            ListElement { text: "10 kSam" }
-            ListElement { text: "5 kSam" }
-            ListElement { text: "2 kSam" }
-            ListElement { text: "1 kSam" }
-            ListElement { text: "500 Sam" }
-            ListElement { text: "200 Sam" }
-            ListElement { text: "100 Sam" }
-            ListElement { text: "50 Sam" }
-        }
-        editable: true
-
-        onActivated: {
-            let value = currentText.replace(" kSam", "000").replace(" Sam", "")
-            OscProperties._rec_len(value)
-            updateDisplayedOscData()
-        }
-        onAccepted: {
-            let value = editText
-            if(editText.includes("kSam")){
-                value = editText.replace(" kSam", "")
-                value = parseFloat(value)*1000
-            }
-            else if(editText.includes("Sam")){
-                value = editText.replace(" Sam", "")
-            }
-            OscProperties._rec_len(value)
-            updateDisplayedOscData()
-
-        }
-
-        background: Rectangle {
-            implicitWidth: recordLengthLabel.width + 20
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Measure Mode
-    ComboBox {
-        id: measureMode
-        model: {}
-        onActivated: {
-            OscProperties._measure_mode(currentText)
-            updateDisplayedOscData()
-        }
-
-        background: Rectangle {
-            implicitWidth: measureModeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Start/Stop
-    Button {
-        id: startStop
-        text: ""
-        onClicked: OscProperties._start_n_stop()
-
-        background: Rectangle {
-            implicitWidth: startStopLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    onReloadOscilloscopeSettings: {
-        reloadOscSettings()
-    }
-
-    function reloadOscSettings(){
+    onReloadOscilloscopeSettings: function() {
         OscProperties._is_running()
         OscProperties._res_avail()
         OscProperties._clock_src_avail()
@@ -360,136 +18,242 @@ GridLayout {
         OscProperties._pre_sample_ratio(NaN)
     }
 
-    function updateDisplayedOscData(){
-        reloadOscSettings()
-        oscilloscopeMainRect.reloadOscChannelSettings()
+    RowLayout {
+        // Segment Count not supported
+        // Trigger Delay not supported
+        // Trigger Hold Off not supported
+
+        UniswagCombobox {
+            id: clockSource
+
+            labelText: "Clock Source"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._clock_src(selectedText)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagCombobox {
+            id: clockOutput
+
+            labelText: "Clock Output"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._clock_out(selectedText)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagCombobox {
+            id: res
+
+            labelText: "ADU Resolution"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._res(selectedText)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagCombobox {
+            id: autoRes
+
+            labelText: "ADU Auto Resolution"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._auto_res(selectedText)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagButton {
+            labelText: "Trigger"
+            buttonText: "Force"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                OscProperties._force_trig()
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagTextfield {
+            id: triggerTimeout
+
+            labelText: "Trigger Timeout"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._trig_timeout(enteredText)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagTextfield {
+            id: preSampleRatio
+
+            labelText: "Pre Sample Ratio"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._pre_sample_ratio(enteredText)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagComboTextfield {
+            id: frequency
+
+            labelText: "Sample Frequency"
+            backgroundColor: settingsBar.backgroundColor
+            list: ["100 MHz", "50 MHz", "25 MHz", "10 MHz", "5 MHz", "1 MHz", "100 kHz", "50 kHz", "25 kHz", "10 kHz", "5 kHz", "1 kHz", "500 Hz", "200 Hz", "100 Hz", "50 Hz"]
+            onClickOrConfirm: function(passedText) {
+                let value = functions.detachPrefixedUnit(passedText, ["Hz", "kHz", "MHz"])
+                OscProperties._sample_freq(value)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagComboTextfield {
+            id: recordLength
+
+            labelText: "Record length"
+            backgroundColor: settingsBar.backgroundColor
+            widthExtension: 20
+            list: ["100 kSam", "50 kSam", "20 kSam", "10 kSam", "5 kSam", "2 kSam", "1 kSam", "500 Sam", "200 Sam", "100 Sam", "50 Sam"]
+            onClickOrConfirm: function(passedText) {
+                let value = functions.detachPrefixedUnit(passedText, ["Sam", "kSam"])
+                OscProperties._rec_len(value)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagCombobox {
+            id: measureMode
+
+            labelText: "Measure Mode"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._measure_mode(selectedText)
+                settingsBar.updateDisplayedOscData()
+            }
+        }
+
+        UniswagButton {
+            id: startStop
+
+            labelText: "Start/Stop"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                OscProperties._start_n_stop()
+            }
+        }
+
     }
-
-
-    Component.onCompleted: {
-       updateDisplayedOscData()
-    }
-
 
     Connections {
         target: OscProperties
 
         function onClockSrc(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                clockSource.currentIndex = findIndexOfModel(clockSource.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(clockSource, value)
         }
         function onClockSrcAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                clockSource.model = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxList(clockSource, value)
         }
 
         function onClockOut(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                clockOutput.currentIndex = findIndexOfModel(clockOutput.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(clockOutput, value)
         }
         function onClockOutsAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                clockOutput.model = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxList(clockOutput, value)
         }
 
         function onRes(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                res.currentIndex = findIndexOfModel(res.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(res, value)
         }
         function onResAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                res.model = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxList(res, value)
         }
 
         function onAutoRes(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                autoRes.currentIndex = findIndexOfModel(autoRes.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(autoRes, value)
         }
         function onAutoResAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                autoRes.model = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
-        }
-
-        function onSampleFreq(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                //frequency.currentIndex = findNearestIndexOfModel(frequency.model, value)
-                let units = ["Hz", "kHz", "MHz"]
-                let index = 0
-                let multiplier = 1000
-                for(let i=0; i<units.length; i++){
-                    if(value/multiplier >= 1){
-                        index++
-                        multiplier *=1000
-                    }
-                }
-                multiplier/=1000
-                value/=multiplier
-                value = value.toFixed(2)
-                frequency.editText = value + " " + units[index]
-            }
-        }
-
-        function onRecLen(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                //recordLength.currentIndex = findNearestIndexOfModel(recordLength.model, value)
-                let units = ["Sam", "kSam"]
-                let index = 0
-                let multiplier = 1000
-                for(let i=0; i<units.length; i++){
-                    if(value/multiplier >= 1){
-                        index++
-                        multiplier *=1000
-                    }
-                }
-                multiplier/=1000
-                value/=multiplier
-                value = value.toFixed(2)
-                recordLength.editText = value + " " + units[index]
-            }
+            functions.updateComboboxList(autoRes, value)
         }
 
         function onMeasureMode(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                measureMode.currentIndex = findIndexOfModel(measureMode.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(measureMode, value)
         }
         function onMeasureModesAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                measureMode.model = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxList(measureMode, value)
+        }
+
+        function onSampleFreq(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            let listOfIncreasingUnits = ["Hz", "kHz", "MHz"]
+            value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
+            functions.updateComboTextfield(frequency, value)
+        }
+
+        function onRecLen(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            let listOfIncreasingUnits = ["Sam", "kSam"]
+            value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
+            functions.updateComboTextfield(recordLength, value)
         }
 
         function onTrigTimeout(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                triggerTimeout.text = ""
-                triggerTimeout.placeholderText = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateTextfield(triggerTimeout, value)
         }
 
         function onPreSampleRatio(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                preSampleRatio.text = ""
-                preSampleRatio.placeholderText = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateTextfield(preSampleRatio, value)
         }
 
         function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
         }
     }
 
@@ -497,20 +261,11 @@ GridLayout {
         target: FrontToBackConnector
 
         function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
         }
-
     }
+
 }
-
-
-
-
-

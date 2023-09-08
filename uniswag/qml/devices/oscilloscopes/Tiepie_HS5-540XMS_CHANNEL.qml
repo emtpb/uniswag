@@ -1,348 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import "./../../res/customtypes"
 
-GridLayout {
-    columns: 11
-    columnSpacing: 10
+UniswagOscChSettingsBar {
+    id: settingsBar
 
-    // Trigger Condition not supported
-    // Trigger Time not supported
-
-    signal triggerSliderPositionChanged(real position)
-    signal zoomed()
-    signal reloadOscChannelSettings()
-
-     property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-    Label {
-        id: triggerConditionLabel
-        text: "Trigger Condition"
-    }
-    Label {
-        id: triggerTimeLabel
-        text: "Trigger Time"
-    }
-
-    Label {
-        id: couplingLabel
-        text: "Coupling"
-    }
-    Label {
-        id: probeGainLabel
-        text: "Probe Gain"
-    }
-    Label {
-        id: probeOffsetLabel
-        text: "Probe Offset"
-    }
-    Label {
-        id: autoRangeLabel
-        text: "Auto Range State"
-    }
-    Label {
-        id: rangeLabel
-        text: "Range"
-    }
-    Label {
-        id: triggerEnabledLabel
-        text: "Trigger State"
-    }
-    Label {
-        id: triggerKindsLabel
-        text: "Trigger Kinds"
-    }
-    Label {
-        id: triggerLevelLabel
-        text: "Trigger Level"
-    }
-    Label {
-        id: triggerHysteresisLabel
-        text: "Trigger Hysteresis"
-    }
-
-    // Trigger Condition
-    ComboBox {
-        id: triggerCondition
-        model: ListModel{}
-        onActivated: {
-            OscProperties._trig_cond(currentText)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: triggerConditionLabel.width + 5
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Trigger Time
-    TextField {
-        id: triggerTime
-        onAccepted: {
-            OscProperties._trig_time(text)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: triggerTimeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Coupling
-    ComboBox {
-        id: coupling
-        model: ListModel{}
-        onActivated: {
-            OscProperties._coupling(currentText)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: couplingLabel.width + 5
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Probe Gain
-    TextField {
-        id: probeGain
-        onAccepted: {
-            OscProperties._probe_gain(text)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: probeGainLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Probe Offset
-    TextField {
-        id: probeOffset
-        onAccepted: {
-            OscProperties._probe_offset(text)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: probeOffsetLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Auto Range State
-    CheckBox {
-        id: autoRange
-        text: ""
-        implicitHeight: 25
-        indicator: Rectangle {
-            implicitWidth: 12
-            implicitHeight: 12
-            x: autoRange.leftPadding
-            y: parent.height / 2 - height / 2
-            radius: 3
-            border.color: autoRange.down ? "#17a81a" : "#21be2b"
-            Rectangle {
-                width: 6
-                height: 6
-                x: 3
-                y: 3
-                radius: 2
-                color: autoRange.down ? "#17a81a" : "#21be2b"
-                visible: autoRange.checked
-            }
-        }
-        contentItem: Text {
-            text: autoRange.text
-            font: autoRange.font
-            opacity: enabled ? 1.0 : 0.3
-            color: autoRange.checked ? "#17a81a" : "#990000"
-            verticalAlignment: Text.AlignVCenter
-            leftPadding: autoRange.indicator.width + autoRange.spacing
-        }
-        background: Rectangle {
-            implicitWidth: autoRangeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-        onCheckStateChanged: {
-            if(checkState === Qt.Checked){
-                OscProperties._is_auto_range(true)
-            }
-            else {
-                OscProperties._is_auto_range(false)
-            }
-            updateDisplayedChannelData()
-        }
-    }
-
-    // Range
-    ComboBox {
-        id: range
-        model: ListModel{}
-        onActivated: {
-            OscProperties._range(currentText)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: rangeLabel.width + 30
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Trigger State
-    CheckBox {
-        id: triggerEnabled
-        text: ""
-        implicitHeight: 25
-        indicator: Rectangle {
-            implicitWidth: 12
-            implicitHeight: 12
-            x: triggerEnabled.leftPadding
-            y: parent.height / 2 - height / 2
-            radius: 3
-            border.color: triggerEnabled.down ? "#17a81a" : "#21be2b"
-            Rectangle {
-                width: 6
-                height: 6
-                x: 3
-                y: 3
-                radius: 2
-                color: triggerEnabled.down ? "#17a81a" : "#21be2b"
-                visible: triggerEnabled.checked
-            }
-        }
-        contentItem: Text {
-            text: triggerEnabled.text
-            font: triggerEnabled.font
-            opacity: enabled ? 1.0 : 0.3
-            color: triggerEnabled.checked ? "#17a81a" : "#990000"
-            verticalAlignment: Text.AlignVCenter
-            leftPadding: triggerEnabled.indicator.width + triggerEnabled.spacing
-        }
-        background: Rectangle {
-            implicitWidth: triggerEnabledLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-        onCheckStateChanged: {
-            if(checkState === Qt.Checked){
-                OscProperties._is_trig_enabled(true)
-            }
-            else {
-                OscProperties._is_trig_enabled(false)
-            }
-            updateDisplayedChannelData()
-        }
-    }
-
-    // Trigger Kinds
-    ComboBox {
-        id: triggerKinds
-        model: ListModel{}
-        onActivated: {
-            OscProperties._trig_kind(currentText)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: triggerKindsLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Trigger Level
-    TextField {
-        id: triggerLevel
-        onAccepted: {
-            OscProperties._trig_lvl(text)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: triggerLevelLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Trigger Hysteresis
-    TextField {
-        id: triggerHysteresis
-        onAccepted: {
-            OscProperties._trig_hyst(text)
-            updateDisplayedChannelData()
-        }
-
-        background: Rectangle {
-            implicitWidth: triggerHysteresisLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    onTriggerSliderPositionChanged: function(position){
-        OscProperties._range(NaN)
-        OscProperties._trig_lvl(position)
-        setHysteresisIconSize(hysteresisValue)
-    }
-
-    onZoomed: {
-        OscProperties._range(NaN)
-        oscilloscopeMainRect.triggerIconPosition(triggerLevelValue)
-        setHysteresisIconSize(hysteresisValue)
-    }
-
-    onReloadOscChannelSettings: {
-        reloadChSettings()
-    }
-
-    function reloadChSettings(){
+    onReloadOscChannelSettings: function() {
         OscProperties._trig_cond_avail()
         OscProperties._trig_time(NaN)
         OscProperties._couplings_avail()
@@ -357,198 +20,272 @@ GridLayout {
         OscProperties._range(NaN)
     }
 
-    function updateDisplayedChannelData(){
-        reloadChSettings()
-        oscilloscopeMainRect.reloadOscilloscopeSettings()
+    onTriggerSliderPositionChanged: function(position) {
+        OscProperties._range(NaN)
+        OscProperties._trig_lvl(position)
+        functions.triggerSliderHysteresisUpdate()
     }
 
-
-    Component.onCompleted: {
-        updateDisplayedChannelData()
+    onZoomed: function() {
+        OscProperties._range(NaN)
+        functions.triggerSliderPositionUpdate()
+        functions.triggerSliderHysteresisUpdate()
     }
 
-    Timer {
-           interval: 1000;
-           running: false
-           repeat: true
-           onTriggered: OscProperties._range(NaN)
-       }
+    RowLayout {
+        UniswagCombobox {
+            id: triggerCondition
 
-
-    property real rangeValue: 0
-    property real hysteresisValue: 0
-    property real triggerLevelValue: 0
-
-    // triggerHysteresis on tiepie in percent of the selected range
-    function setHysteresisIconSize(triggerHysteresisInPercent){
-        // scilloscopeChart.axes[3]: rawAxisY
-        if(oscilloscopeChart.axes[3].max !== oscilloscopeChart.axes[3].min){
-            let visibleAreaOfRangeInPercent = (oscilloscopeChart.axes[3].max- oscilloscopeChart.axes[3].min) / (parseFloat(range.currentText)*2)
-            oscilloscopeMainRect.changeHysteresisSliderSizeInPercent(triggerHysteresisInPercent/visibleAreaOfRangeInPercent)
+            labelText: "Trigger Condition"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._trig_cond(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
         }
-        else {
-            oscilloscopeMainRect.changeHysteresisSliderSizeInPercent(triggerHysteresisInPercent)
+
+        UniswagTextfield {
+            id: triggerTime
+
+            labelText: "Trigger Time"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._trig_time(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
         }
+
+        UniswagCombobox {
+            id: coupling
+
+            labelText: "Coupling"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._coupling(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: probeGain
+
+            labelText: "Probe Gain"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._probe_gain(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: probeOffset
+
+            labelText: "Probe Offset"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._probe_offset(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCheckbox {
+            id: autoRange
+
+            labelText: "Auto Range State"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(isActive) {
+                OscProperties._is_auto_range(isActive)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCombobox {
+            id: range
+
+            labelText: "Range"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._range(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCheckbox {
+            id: triggerEnabled
+
+            labelText: "Trigger State"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(isActive) {
+                OscProperties._is_trig_enabled(isActive)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCombobox {
+            id: triggerKinds
+
+            labelText: "Trigger Kinds"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._trig_kind(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: triggerLevel
+
+            labelText: "Trigger Level"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._trig_lvl(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: triggerHysteresis
+
+            labelText: "Trigger Hysteresis"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._trig_hyst(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
     }
 
     Connections {
         target: OscProperties
 
-        // Trigger Condition
         function onTrigCond(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                triggerCondition.currentIndex = findIndexOfModel(triggerCondition.model, value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxSelection(triggerCondition, value)
         }
         function onTrigCondAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                triggerCondition.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(triggerCondition, value)
         }
 
-        // Trigger Time
         function onTrigTime(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                triggerTime.text = ""
-                let text = value[0].toString()
-                for(let i = 1; i < value.length; i++){
-                    text+= ", " + value[i].toString()
-                }
-                triggerTime.placeholderText = text
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            let stringifiedValue = functions.listToString(value)
+            functions.updateTextfield(triggerTime, stringifiedValue)
         }
 
-
-        // Coupling
         function onCoupling(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                coupling.currentIndex = findIndexOfModel(coupling.model, value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxSelection(coupling, value)
         }
         function onCouplingsAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                coupling.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(coupling, value)
         }
 
-        // Probe Gain
         function onProbeGain(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                probeGain.text = ""
-                probeGain.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(probeGain, value)
         }
 
-        // Probe Offset
         function onProbeOffset(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                probeOffset.text = ""
-                probeOffset.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(probeOffset, value)
         }
 
-        // Auto Range State
         function onIsAutoRange(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                if(value === true){
-                    autoRange.checkState = Qt.Checked
-                    autoRange.text = "ON"
-                }
-                else {
-                    autoRange.checkState = Qt.Unchecked
-                    autoRange.text = "OFF"
-                }
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateCheckbox(autoRange, value, "ON", "OFF")
         }
 
-        // Range
         function onRange(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                range.currentIndex = findIndexOfModel(range.model, value)
-                rangeValue = parseFloat(value)
-                setHysteresisIconSize(hysteresisValue)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxSelection(range, value)
+            // affects trigger slider!
+            functions.triggerSliderRangeUpdate(value)
+            functions.triggerSliderHysteresisUpdate()
         }
         function onRangesAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                range.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(range, value)
         }
 
-        // Trigger State
         function onIsTrigEnabled(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                if(value === true){
-                    triggerEnabled.checkState = Qt.Checked
-                    triggerEnabled.text = "ON"
-                }
-                else {
-                    triggerEnabled.checkState = Qt.Unchecked
-                    triggerEnabled.text = "OFF"
-                }
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateCheckbox(triggerEnabled, value, "ON", "OFF")
         }
 
-        // Trigger Kinds
         function onTrigKind(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                if(value === "rising"){
-                    oscilloscopeMainRect.risingEdgeIcon()
-                }
-                else if(value === "falling"){
-                    oscilloscopeMainRect.fallingEdgeIcon()
-                }
-                else if(value === "in window"){
-                    oscilloscopeMainRect.inWindowIcon()
-                }
-                else if(value === "out window"){
-                    oscilloscopeMainRect.outWindowIcon()
-                }
-                else{
-                    oscilloscopeMainRect.triangleIcon()
-                }
-
-                triggerKinds.currentIndex = findIndexOfModel(triggerKinds.model, value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxSelection(triggerKinds, value)
+            // affects trigger slider!
+            switch (value) {
+                case "rising":
+                    functions.triggerSliderIconUpdate("rising edge")
+                    break;
+                case "falling":
+                    functions.triggerSliderIconUpdate("falling edge")
+                    break;
+                case "in window":
+                    functions.triggerSliderIconUpdate("in window")
+                    break;
+                case "out window":
+                    functions.triggerSliderIconUpdate("out window")
+                    break;
+                default:
+                    functions.triggerSliderIconUpdate()
             }
         }
         function onTrigKindsAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                triggerKinds.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(triggerKinds, value)
         }
 
-        // Trigger Level
         function onTrigLvl(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                triggerLevel.text = ""
-                let text = value[0].toString()
-                for(let i = 1; i < value.length; i++){
-                    text+= ", " + value[i].toString()
-                }
-                triggerLevel.placeholderText = text
-                // max number in list
-                oscilloscopeMainRect.triggerIconPosition(Math.max.apply(Math, value))
-                triggerLevelValue = Math.max.apply(Math, value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            let stringifiedValue = functions.listToString(value)
+            functions.updateTextfield(triggerLevel, stringifiedValue)
+            // affects trigger slider!
+            functions.triggerSliderPositionUpdate(value)
         }
 
-        // Trigger Hysteresis
         function onTrigHyst(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                triggerHysteresis.text = ""
-                let text = value[0].toString()
-                for(let i = 1; i < value.length; i++){
-                    text+= ", " + value[i].toString()
-                }
-                triggerHysteresis.placeholderText = text
-
-                hysteresisValue = parseFloat(value)
-                setHysteresisIconSize(value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            let stringifiedValue = functions.listToString(value)
+            functions.updateTextfield(triggerHysteresis, stringifiedValue)
+            // affects trigger slider!
+            functions.triggerSliderHysteresisUpdate(value[0])
         }
     }
+
 }
-
-
-
-

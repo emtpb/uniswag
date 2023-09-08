@@ -14,8 +14,8 @@ import "res/devicelist/"
 */
 Rectangle {
     id: signalGenMainRect
-    Layout.fillWidth: true
-    Layout.fillHeight: true
+    //Layout.fillWidth: true
+    //Layout.fillHeight: true
 
     property string signalGenPath: "devices/generators/"
 
@@ -43,7 +43,8 @@ Rectangle {
         */
         Rectangle {
             id: signalGenListMainWindow
-            implicitWidth: ((signalGenMainRect.width * 0.1) > 180) ? (signalGenMainRect.width * 0.1) : 180
+            //implicitWidth: ((signalGenMainRect.width * 0.1) > 180) ? (signalGenMainRect.width * 0.1) : 180
+            implicitWidth: 180
 
             Layout.fillHeight: true
 
@@ -102,52 +103,65 @@ Rectangle {
                 Layout.fillWidth: true
             }
             
-            GridLayout{
-                rows: ((signalGenMainRect.width - signalGenListMainWindow.width) / 2 > signalGenLoader.width + 100) && ((signalGenMainRect.width - signalGenListMainWindow.width) / 2 > signalGenChannelLoader.width + 100) ? 1 : 2
-                columns: ((signalGenMainRect.width - signalGenListMainWindow.width) / 2 > signalGenLoader.width + 100) && ((signalGenMainRect.width - signalGenListMainWindow.width) / 2 > signalGenChannelLoader.width + 100) ? 2 : 1
+            ColumnLayout{
                 Layout.fillWidth: true
 
+                //! The oscilloscope settings
                 Rectangle{
-                    implicitWidth: (signalGenMainRect.width - signalGenListMainWindow.width)  / 2
+                    Layout.fillWidth: true
                     height: 60
                     color: colorPalette.window
                     Layout.leftMargin: 10
+                    Layout.rightMargin: 10
 
                     RowLayout {
+                        anchors.fill: parent
                         spacing: 10
+                        clip: true
 
                         Label {
                             text: qsTr("Oscilloscope:")
+                            visible: signalGenLoader.active
                         }
                         Item {
-
+                            Layout.fillWidth: true
                             implicitHeight: 60
                             Loader {
                                 id: signalGenLoader
                                 active: false
+                                anchors.fill: parent
+
+                                property var mainRect: signalGenMainRect
                             }
                         }
                     }
                 }
-
+                //! The channel settings
                 Rectangle{
-                    implicitWidth: (signalGenMainRect.width - signalGenListMainWindow.width)  / 2
+                    Layout.fillWidth: true
                     height: 60
                     color: colorPalette.window
                     Layout.leftMargin: 10
+                    Layout.rightMargin: 10
 
                     RowLayout {
+                        anchors.fill: parent
                         spacing: 10
+                        clip: true
 
                         Label {
                             text: qsTr("Channel:")
+                            visible: signalGenChannelLoader.active
                         }
                         Item {
-                            Layout.leftMargin: 10
+                            Layout.fillWidth: true
                             implicitHeight: 60
                             Loader {
                                 id: signalGenChannelLoader
                                 active: false
+                                anchors.fill: parent
+
+                                property var mainRect: signalGenMainRect
                             }
                         }
                     }

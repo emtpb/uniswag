@@ -195,7 +195,7 @@ class TiepieOsc(Oscilloscope):
                     self._cond_running.wait()
 
     def _term_deletion(self):
-        self._osc.dev_close()
+        self._osc.close()
 
     @property
     def is_running(self):

@@ -19,7 +19,6 @@ def main():
     app = QApplication(sys.argv)
     engine = QQmlApplicationEngine()
 
-
     front_to_back_connector = FrontToBackConnector()
     osc_properties = OscProperties(front_to_back_connector)
     gen_properties = GenProperties(front_to_back_connector)

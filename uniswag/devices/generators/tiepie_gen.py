@@ -35,7 +35,7 @@ class TiepieGen(Generator):
         self._is_running = False
 
     def _term_deletion(self):
-        self._gen.dev_close()
+        self._gen.close()
 
     @property
     def is_running(self):

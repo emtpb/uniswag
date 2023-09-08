@@ -1,188 +1,140 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import "./../../res/customtypes"
 
-GridLayout {
-    columns: 5
-    columnSpacing: 10
+UniswagOscChSettingsBar {
+    id: settingsBar
 
-    signal triggerSliderPositionChanged(real position)
-
-    property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-    property real probeOffsetValue: 0.0
-    property real rangeValue: 1.0
-
-    Label {
-        id: couplingLabel
-        text: "Coupling"
-    }
-    Label {
-        id: probeGainLabel
-        text: "Probe Gain"
-    }
-    Label {
-        id: probeOffsetLabel
-        text: "Probe Offset"
-    }
-    Label {
-        id: rangeLabel
-        text: "Range"
-    }
-    Label {
-        id: triggerLevelLabel
-        text: "Trigger Level"
-    }
-
-    // Coupling
-    ComboBox {
-        id: coupling
-        model: ListModel{}
-        onActivated: OscProperties._coupling(currentText)
-
-        background: Rectangle {
-            implicitWidth: couplingLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Probe Gain
-    TextField {
-        id: probeGain
-        onAccepted: OscProperties._probe_gain(text)
-
-        background: Rectangle {
-            implicitWidth: probeGainLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Probe Offset
-    TextField {
-        id: probeOffset
-        onAccepted: OscProperties._probe_offset(text)
-
-        background: Rectangle {
-            implicitWidth: probeOffsetLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Range
-    TextField {
-        id: range
-        onAccepted: OscProperties._range(text)
-
-        background: Rectangle {
-            implicitWidth: rangeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Trigger Level
-    TextField {
-        id: triggerLevel
-        onAccepted: OscProperties._trig_lvl(text)
-
-        background: Rectangle {
-            implicitWidth: triggerLevelLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    onTriggerSliderPositionChanged: function(position){
-        OscProperties._trig_lvl(position)
-    }
-
-    Component.onCompleted: {
+    onReloadOscChannelSettings: function() {
         OscProperties._couplings_avail()
         OscProperties._probe_gain(NaN)
         OscProperties._probe_offset(NaN)
         OscProperties._trig_lvl(NaN)
         OscProperties._range(NaN)
 
-        // set hysteresis to 0
-        oscilloscopeMainRect.changeHysteresisSliderSizeInPercent(0)
+        // Trigger Hysteresis not supported
+        functions.triggerSliderHysteresisUpdate(0)
+    }
+
+    onTriggerSliderPositionChanged: function(position) {
+        /*
+        OscProperties._range(NaN)
+        */
+        OscProperties._trig_lvl(position)
+    }
+
+    onZoomed: function() {
+        /*
+        OscProperties._range(NaN)
+        functions.triggerSliderPositionUpdate()
+        */
+    }
+
+    RowLayout {
+
+        UniswagCombobox {
+            id: coupling
+
+            labelText: "Coupling"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._coupling(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: probeGain
+
+            labelText: "Probe Gain"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._probe_gain(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: probeOffset
+
+            labelText: "Probe Offset"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._probe_offset(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: range
+
+            labelText: "Range"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._range(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: triggerLevel
+
+            labelText: "Trigger Level"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._trig_lvl(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
     }
 
     Connections {
         target: OscProperties
 
-        // Coupling
         function onCoupling(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                coupling.currentIndex = findIndexOfModel(coupling.model, value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxSelection(coupling, value)
         }
         function onCouplingsAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                coupling.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(coupling, value)
         }
 
-        // Probe Gain
         function onProbeGain(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                probeGain.text = ""
-                probeGain.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(probeGain, value)
         }
 
-        // Probe Offset
         function onProbeOffset(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                probeOffset.text = ""
-                probeOffset.placeholderText = value
-                probeOffsetValue = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(probeOffset, value)
         }
 
-        // Range
         function onRange(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                range.text = ""
-                range.placeholderText = value
-                rangeValue = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(range, value)
         }
 
-        // Trigger Level
         function onTrigLvl(device_id, ch_num, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice) && ch_num === oscilloscopeMainRect.selectedChannelNum){
-                triggerLevel.text = ""
-                let text = value[0].toString()
-                for(let i = 1; i < value.length; i++){
-                    text+= ", " + value[i].toString()
-                }
-                triggerLevel.placeholderText = text
-                let triggerPos = Math.max.apply(Math, value)
-                oscilloscopeMainRect.triggerIconPosition(triggerPos)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            let stringifiedValue = functions.listToString(value)
+            functions.updateTextfield(triggerLevel, stringifiedValue)
+            // affects trigger slider!
+            functions.triggerSliderPositionUpdate(value)
         }
-
     }
-}
 
-
-
-
+ }

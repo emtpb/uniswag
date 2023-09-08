@@ -14,13 +14,15 @@ import "res/devicelist/"
 */
 Rectangle {
     id: oscilloscopeMainRect
-    Layout.fillWidth: true
-    Layout.fillHeight: true
+    //Layout.fillWidth: true
+    //Layout.fillHeight: true
 
     property string oscPath: "devices/oscilloscopes/"
 
     property var selectedDevice: NaN
     property var selectedChannelNum: NaN
+
+    property var chart: oscilloscopeChart
 
     /*!
         \qmltype RowLayout
@@ -43,7 +45,8 @@ Rectangle {
         */
         Rectangle {
             id: oscilloscopeListMainWindow
-            implicitWidth: ((oscilloscopeMainRect.width * 0.1) > 180) ? (oscilloscopeMainRect.width * 0.1) : 180
+            //implicitWidth: ((oscilloscopeMainRect.width * 0.1) > 180) ? (oscilloscopeMainRect.width * 0.1) : 180
+            implicitWidth: 180
 
             Layout.fillHeight: true
 
@@ -161,61 +164,72 @@ Rectangle {
                 \qmltype GridLayout
                 \brief A layout containing the device settings box below the chart
             */
-            GridLayout{
-                //! If the screen is wide enough, Osc and channel settings are displayed in one row, otherwise in two
-                rows: ((oscilloscopeMainRect.width - oscilloscopeListMainWindow.width) / 2 > oscilloscopeLoader.width + 100) && ((oscilloscopeMainRect.width - oscilloscopeListMainWindow.width) / 2 > oscilloscopeChannelLoader.width + 100) ? 1 : 2
-                columns: ((oscilloscopeMainRect.width - oscilloscopeListMainWindow.width) / 2 > oscilloscopeLoader.width + 100) && ((oscilloscopeMainRect.width - oscilloscopeListMainWindow.width) / 2 > oscilloscopeChannelLoader.width + 100) ? 2 : 1
+
+            ColumnLayout{
                 Layout.fillWidth: true
 
                 //! The oscilloscope settings
                 Rectangle{
-                    implicitWidth: (oscilloscopeMainRect.width - oscilloscopeListMainWindow.width)  / 2
+                    Layout.fillWidth: true
                     height: 60
                     color: colorPalette.window
                     Layout.leftMargin: 10
+                    Layout.rightMargin: 10
 
                     RowLayout {
+                        anchors.fill: parent
                         spacing: 10
+                        clip: true
 
                         Label {
                             text: qsTr("Oscilloscope:")
                             visible: oscilloscopeLoader.active
                         }
                         Item {
-
+                            Layout.fillWidth: true
                             implicitHeight: 60
                             Loader {
                                 id: oscilloscopeLoader
                                 active: false
+                                anchors.fill: parent
+
+                                property var mainRect: oscilloscopeMainRect
                             }
                         }
                     }
                 }
                 //! The channel settings
                 Rectangle{
-                    implicitWidth: (oscilloscopeMainRect.width - oscilloscopeListMainWindow.width)  / 2
+                    Layout.fillWidth: true
                     height: 60
                     color: colorPalette.window
                     Layout.leftMargin: 10
+                    Layout.rightMargin: 10
 
                     RowLayout {
+                        anchors.fill: parent
                         spacing: 10
+                        clip: true
 
                         Label {
                             text: qsTr("Channel:")
                             visible: oscilloscopeChannelLoader.active
                         }
                         Item {
-                            Layout.leftMargin: 10
+                            Layout.fillWidth: true
                             implicitHeight: 60
                             Loader {
                                 id: oscilloscopeChannelLoader
                                 active: false
+                                anchors.fill: parent
+
+                                property var mainRect: oscilloscopeMainRect
                             }
                         }
                     }
                 }
             }
+
         }
     }
 

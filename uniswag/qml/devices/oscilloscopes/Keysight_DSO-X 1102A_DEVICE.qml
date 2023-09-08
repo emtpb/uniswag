@@ -1,255 +1,182 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import "./../../res/customtypes"
 
+UniswagOscDevSettingsBar {
+    id: settingsBar
 
-GridLayout {
-    columns: 7
-    columnSpacing: 10
-
-     property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-    Label {
-        id: startStopLabel
-        text: "Start/Stop"
-    }
-    Label {
-        id: resetLabel
-        text: "Reset"
-    }
-    Label {
-        id: recordLengthLabel
-        text: "Record length"
-    }
-    Label {
-        id: timeBaseLabel
-        text: "Time Base"
-    }
-
-    Label {
-        id: triggerModeLabel
-        text: "Trigger Mode"
-    }
-    Label {
-        id: triggerSweepLabel
-        text: "Trigger Sweep"
-    }
-    Label {
-        id: triggerSlopeLabel
-        text: "Trigger Slope"
-    }
-
-    // Start/Stop
-    Button {
-        id: startStop
-        text: ""
-        onClicked: OscProperties._start_n_stop()
-
-        background: Rectangle {
-            implicitWidth: startStopLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Reset
-    Button {
-        id: reset
-        text: "Perform"
-        onClicked: OscProperties._reset()
-
-        background: Rectangle {
-            implicitWidth: resetLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Record length
-    TextField {
-        id: recordLength
-        onAccepted: OscProperties._rec_len(text)
-
-        background: Rectangle {
-            implicitWidth: recordLengthLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Time Base
-    TextField {
-        id: timeBase
-        onAccepted: OscProperties._time_base(text)
-
-        background: Rectangle {
-            implicitWidth: timeBaseLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Trigger Mode
-    ComboBox {
-        id: triggerMode
-        model: ListModel{}
-        onActivated: OscProperties._trig_mode(currentText)
-
-        background: Rectangle {
-            implicitWidth: triggerModeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Trigger Sweep
-    ComboBox {
-        id: triggerSweep
-        model: ListModel{}
-        onActivated: OscProperties._trig_sweep(currentText)
-
-        background: Rectangle {
-            implicitWidth: triggerSweepLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    // Trigger Slope
-    ComboBox {
-        id: triggerSlope
-        model: ListModel{}
-        onActivated: OscProperties._trig_slope(currentText)
-
-        background: Rectangle {
-            implicitWidth: triggerSlopeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-
-    Component.onCompleted: {
+    onReloadOscilloscopeSettings: function() {
         OscProperties._is_running()
         OscProperties._rec_len(NaN)
         OscProperties._time_base(NaN)
-
         OscProperties._trig_modes_avail()
-
         OscProperties._trig_sweeps_avail()
-
         OscProperties._trig_slopes_avail()
+
+        // Trigger Kinds not supported
+        functions.triggerSliderIconUpdate()
+    }
+
+    RowLayout {
+
+        UniswagTextfield {
+            id: recordLength
+
+            labelText: "Record length"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._rec_len(enteredText)
+            }
+        }
+
+        UniswagTextfield {
+            id: timeBase
+
+            labelText: "Time Base"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._time_base(enteredText)
+            }
+        }
+
+        UniswagCombobox {
+            id: triggerMode
+
+            labelText: "Trigger Mode"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._trig_mode(selectedText)
+            }
+        }
+
+        UniswagCombobox {
+            id: triggerSweep
+
+            labelText: "Trigger Sweep"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._trig_sweep(selectedText)
+            }
+        }
+
+        UniswagCombobox {
+            id: triggerSlope
+
+            labelText: "Trigger Slope"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._trig_slope(selectedText)
+            }
+        }
+
+        UniswagButton {
+            labelText: "Reset"
+            buttonText: "Perform"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                OscProperties._reset()
+            }
+        }
+
+        UniswagButton {
+            id: startStop
+
+            labelText: "Start/Stop"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                OscProperties._start_n_stop()
+            }
+        }
 
     }
 
     Connections {
         target: OscProperties
 
-        function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
-            }
-        }
-
         function onRecLen(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                recordLength.text = ""
-                recordLength.placeholderText = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            let listOfIncreasingUnits = ["Sam", "kSam"]
+            value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
+            functions.updateComboTextfield(recordLength, value)
         }
 
         function onTimeBase(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                timeBase.text = ""
-                timeBase.placeholderText = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            let listOfIncreasingUnits = ["Sam", "kSam"]
+            value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
+            functions.updateComboTextfield(timeBase, value)
         }
 
         function onTrigMode(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                triggerMode.currentIndex = findIndexOfModel(triggerMode.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(triggerMode, value)
         }
         function onTrigModesAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                triggerMode.model = value
-                oscilloscopeMainRect.triangleIcon()
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxList(triggerMode, value)
+            /*
+            oscilloscopeMainRect.triangleIcon()
+            */
         }
 
         function onTrigSweep(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                triggerSweep.currentIndex = findIndexOfModel(triggerSweep.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(triggerSweep, value)
         }
         function onTrigSweepsAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                triggerSweep.model = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxList(triggerSweep, value)
         }
 
         function onTrigSlope(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                triggerSlope.currentIndex = findIndexOfModel(triggerSlope.model, value)
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxSelection(triggerSlope, value)
         }
         function onTrigSlopesAvail(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                triggerSlope.model = value
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateComboboxList(triggerSlope, value)
         }
 
+        function onReset(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            settingsBar.updateDisplayedOscData()
+        }
+
+        function onIsRunning(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
+        }
     }
 
     Connections {
         target: FrontToBackConnector
 
         function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, oscilloscopeMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
         }
-
     }
+
 }
-
-
-
-
-

@@ -258,7 +258,7 @@ class OscProperties(QtCore.QObject):
     def _rec_len_thread(self, device, value):
         # filter out empty or non-Int-like input
         try:
-            value = int(value)
+            value = int(float(value))
         except (TypeError, ValueError):
             value = None
 
@@ -328,7 +328,7 @@ class OscProperties(QtCore.QObject):
     def _seg_cnt_thread(self, device, value):
         # filter out empty or non-Int-like input
         try:
-            value = int(value)
+            value = int(float(value))
         except (TypeError, ValueError):
             value = None
 
@@ -376,7 +376,7 @@ class OscProperties(QtCore.QObject):
     def _trig_holdoff_thread(self, device, value):
         # filter out empty or non-Int-like input
         try:
-            value = int(value)
+            value = int(float(value))
         except (TypeError, ValueError):
             value = None
 
