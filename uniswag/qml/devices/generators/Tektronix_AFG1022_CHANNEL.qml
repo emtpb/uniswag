@@ -1,317 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
-import QtQuick.Dialogs
+import "./../../res/customtypes"
 
-GridLayout {
-    columns: 11
-    columnSpacing: 10
+UniswagGenChSettingsBar {
+    id: settingsBar
 
-    signal reloadGenChannelSettings()
-
-    property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-
-    // Voltage Max not supported
-    // Voltage Min not supported
-    // Burst Delay not supported
-    // Pulse Width not supported
-    // Pulse Delay not supported
-    // Pulse Hold not supported
-    // Leading Pulse Transition not supported
-    // Trailing Pulse Transition not supported
-
-    Label {
-        id: sigTypeLabel
-        text: "Signal Type"
-    }
-    Label {
-        id: ampLabel
-        text: "Amplitude"
-    }
-    Label {
-        id: offsetLabel
-        text: "Offset"
-    }
-    Label {
-        id: frequencyLabel
-        text: "Frequency"
-    }
-    Label {
-        id: periodLabel
-        text: "Period"
-    }
-    Label {
-        id: phaseLabel
-        text: "Phase"
-    }
-    Label {
-        id: dutyCycleLabel
-        text: "Duty Cycle"
-    }
-    Label {
-        id: impedanceLabel
-        text: "Impedance"
-    }
-    Label {
-        id: isBurstOnLabel
-        text: "Burst State"
-    }
-    Label {
-        id: burstModeLabel
-        text: "Burst Mode"
-    }
-    Label {
-        id: arbSignalLabel
-        text: "Arbitrary Data"
-    }
-
-
-    // Signal Type
-    ComboBox {
-        id: sigType
-        model: ListModel{}
-        onActivated: {
-            GenProperties._sig_type(currentText)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: sigTypeLabel.width + 20
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Amplitude
-    TextField {
-        id: amp
-        onAccepted: {
-            GenProperties._amp(text)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: ampLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Offset
-    TextField {
-        id: offset
-        onAccepted: {
-            GenProperties._offset(text)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: offsetLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Frequency
-    TextField {
-        id: frequency
-        onAccepted: {
-            GenProperties._freq(text)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: frequencyLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Period
-    TextField {
-        id: period
-        onAccepted: {
-            GenProperties._period(text)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: periodLabel.width + 25
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Phase
-    TextField {
-        id: phase
-        onAccepted: {
-            GenProperties._phase(text)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: phaseLabel.width + 25
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Duty Cycle
-    TextField {
-        id: dutyCycle
-        onAccepted: {
-            GenProperties._duty_cycle(text)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: dutyCycleLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Impedance
-    TextField {
-        id: impedance
-        onAccepted: {
-            GenProperties._impedance(text)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: impedanceLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Burst State
-    CheckBox {
-        id: isBurstOn
-        text: ""
-        implicitHeight: 25
-        indicator: Rectangle {
-            implicitWidth: 12
-            implicitHeight: 12
-            x: isBurstOn.leftPadding
-            y: parent.height / 2 - height / 2
-            radius: 3
-            border.color: isBurstOn.down ? "#17a81a" : "#21be2b"
-            Rectangle {
-                width: 6
-                height: 6
-                x: 3
-                y: 3
-                radius: 2
-                color: isBurstOn.down ? "#17a81a" : "#21be2b"
-                visible: isBurstOn.checked
-            }
-        }
-        contentItem: Text {
-            text: isBurstOn.text
-            font: isBurstOn.font
-            opacity: enabled ? 1.0 : 0.3
-            color: isBurstOn.checked ? "#17a81a" : "#990000"
-            verticalAlignment: Text.AlignVCenter
-            leftPadding: isBurstOn.indicator.width + isBurstOn.spacing
-        }
-        background: Rectangle {
-            implicitWidth: isBurstOnLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-        onCheckStateChanged: {
-            if(checkState === Qt.Checked){
-                GenProperties._is_burst_on(true)
-            }
-            else {
-                GenProperties._is_burst_on(false)
-            }
-            loadCurrentSettings()
-        }
-    }
-
-    // Burst Mode
-    ComboBox {
-        id: burstMode
-        model: ListModel{}
-        onActivated: {
-            GenProperties._burst_mode(currentText)
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: burstModeLabel.width + 20
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // arbitrary signal
-    Button {
-        text: "Load"
-        onClicked: {
-            arbSignalDialog.open()
-            loadCurrentSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: arbSignalLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-    FileDialog {
-        id: arbSignalDialog
-        nameFilters: ["Comma-separated values (*.csv)", "JSON Files (*.json)"]
-        //currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-        onAccepted: {
-            GenProperties._arb_data(selectedFile)
-            loadCurrentSettings()
-        }
-    }
-
-    onReloadGenChannelSettings: {
-        reloadChSettings()
-    }
-
-    function reloadChSettings(){
+    onReloadGenChannelSettings: function() {
         GenProperties._sig_types_avail()
         GenProperties._amp(NaN)
         GenProperties._offset(NaN)
@@ -324,117 +18,232 @@ GridLayout {
         GenProperties._impedance(NaN)
     }
 
-    function loadCurrentSettings(){
-        reloadChSettings()
-        signalGenMainRect.reloadGeneratorSettings()
+    RowLayout {
+        // Voltage Max not supported
+        // Voltage Min not supported
+        // Burst Delay not supported
+        // Pulse Width not supported
+        // Pulse Delay not supported
+        // Pulse Hold not supported
+        // Leading Pulse Transition not supported
+        // Trailing Pulse Transition not supported
+
+        UniswagCombobox {
+            id: sigType
+
+            labelText: "Signal Type"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                GenProperties._sig_type(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: amp
+
+            labelText: "Amplitude"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._amp(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: offset
+
+            labelText: "Offset"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._offset(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: frequency
+
+            labelText: "Frequency"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._freq(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: period
+
+            labelText: "Period"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._period(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: phase
+
+            labelText: "Phase"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._phase(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: dutyCycle
+
+            labelText: "Duty Cycle"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._duty_cycle(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: impedance
+
+            labelText: "Impedance"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._impedance(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCheckbox {
+            id: isBurstOn
+
+            labelText: "Burst State"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(isActive) {
+                GenProperties._is_burst_on(isActive)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagCombobox {
+            id: burstMode
+
+            labelText: "Burst Mode"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                GenProperties._burst_mode(selectedText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagButton {
+            labelText: "Arbitrary Data"
+            buttonText: "Load"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                // open file dialog
+                arbData.open()
+            }
+        }
 
     }
 
-    Component.onCompleted: {
-        loadCurrentSettings()
-    }
+    UniswagFiledialog {
+        id: arbData
 
+        filterList: ["Comma-separated values (*.csv)"]
+        onFileSelect: function(fileName) {
+            GenProperties._arb_data(fileName)
+            settingsBar.updateDisplayedChannelData()
+        }
+    }
 
     Connections {
         target: GenProperties
 
-        // Signal Type
         function onSigType(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                sigType.currentIndex = findIndexOfModel(sigType.model, value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxSelection(sigType, value)
         }
         function onSigTypesAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                sigType.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(sigType, value)
         }
 
-        // Amplitude
         function onAmp(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                amp.text = ""
-                amp.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(amp, value)
         }
 
-        // Offset
         function onOffset(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                offset.text = ""
-                offset.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(offset, value)
         }
 
-        // Frequency
         function onFreq(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                frequency.text = ""
-                frequency.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(frequency, value)
         }
 
-        // Period
         function onPeriod(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                period.text = ""
-                period.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(period, value)
         }
 
-        // Phase
         function onPhase(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                phase.text = ""
-                phase.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(phase, value)
         }
 
-        // Duty Cycle
         function onDutyCycle(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                dutyCycle.text = ""
-                dutyCycle.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(dutyCycle, value)
         }
 
-        // Impedance
         function onImpedance(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                impedance.text = ""
-                impedance.placeholderText = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateTextfield(impedance, value)
         }
 
-        // Burst State
         function onIsBurstOn(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                if(value === true){
-                    isBurstOn.checkState = Qt.Checked
-                    isBurstOn.text = "ON"
-                }
-                else {
-                    isBurstOn.checkState = Qt.Unchecked
-                    isBurstOn.text = "OFF"
-                }
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateCheckbox(isBurstOn, value, "ON", "OFF")
         }
 
-        // Burst Mode
         function onBurstMode(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                burstMode.currentIndex = findIndexOfModel(burstMode.model, value)
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxSelection(burstMode, value)
         }
         function onBurstModesAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                burstMode.model = value
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
             }
+            functions.updateComboboxList(burstMode, value)
         }
-
     }
+
 }
-
-
-
-

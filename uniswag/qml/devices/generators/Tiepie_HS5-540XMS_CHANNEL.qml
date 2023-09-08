@@ -1,286 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
-import QtQuick.Dialogs
+import "./../../res/customtypes"
 
-GridLayout {
-    columns: 10
-    columnSpacing: 10
+UniswagGenChSettingsBar {
+    id: settingsBar
 
-    property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-    // Inverted Output not supported
-    // Phase not supported
-    // Pulse Width not supported
-    // Burst Sample Count not supported
-    // Burst Segment Count not supported
-
-    Label {
-        id: modeLabel
-        text: "Mode"
-    }
-    Label {
-        id: sigTypeLabel
-        text: "Signal Type"
-    }
-    Label {
-        id: isAmpAutoRangeLabel
-        text: "Amplitude Auto Ranging"
-    }
-    Label {
-        id: ampLabel
-        text: "Amplitude"
-    }
-    Label {
-        id: offsetLabel
-        text: "Offset"
-    }
-    Label {
-        id: freqModeLabel
-        text: "Frequency Mode"
-    }
-    Label {
-        id: frequencyLabel
-        text: "Frequency"
-    }
-    Label {
-        id: symmetryLabel
-        text: "Symmetry"
-    }
-    Label {
-        id: burstCntLabel
-        text: "Burst Count"
-    }
-    Label {
-        id: arbSignalLabel
-        text: "Arbitrary Data"
-    }
-
-    // Mode
-    ComboBox {
-        id: mode
-        model: ListModel{}
-        onActivated: {
-            GenProperties._mode(currentText)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: modeLabel.width + 55
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Signal Type
-    ComboBox {
-        id: sigType
-        model: ListModel{}
-        onActivated: {
-            GenProperties._sig_type(currentText)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: sigTypeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Amplitude Auto Ranging
-    CheckBox {
-        id: isAmpAutoRange
-        text: ""
-        implicitHeight: 25
-        indicator: Rectangle {
-            implicitWidth: 12
-            implicitHeight: 12
-            x: isAmpAutoRange.leftPadding
-            y: parent.height / 2 - height / 2
-            radius: 3
-            border.color: isAmpAutoRange.down ? "#17a81a" : "#21be2b"
-            Rectangle {
-                width: 6
-                height: 6
-                x: 3
-                y: 3
-                radius: 2
-                color: isAmpAutoRange.down ? "#17a81a" : "#21be2b"
-                visible: isAmpAutoRange.checked
-            }
-        }
-        contentItem: Text {
-            text: isAmpAutoRange.text
-            font: isAmpAutoRange.font
-            opacity: enabled ? 1.0 : 0.3
-            color: isAmpAutoRange.checked ? "#17a81a" : "#990000"
-            verticalAlignment: Text.AlignVCenter
-            leftPadding: isAmpAutoRange.indicator.width + isAmpAutoRange.spacing
-        }
-        background: Rectangle {
-            implicitWidth: isAmpAutoRangeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-        onCheckStateChanged: {
-            if(checkState === Qt.Checked){
-                GenProperties._is_amp_auto_range(true)
-            }
-            else {
-                GenProperties._is_amp_auto_range(false)
-            }
-            reloadChSettings()
-        }
-    }
-
-    // Amplitude
-    TextField {
-        id: amp
-        onAccepted: {
-            GenProperties._amp(text)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: ampLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Offset
-    TextField {
-        id: offset
-        onAccepted: {
-            GenProperties._offset(text)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: offsetLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Frequency Mode
-    ComboBox {
-        id: freqMode
-        model: ListModel{}
-        onActivated: {
-            GenProperties._freq_mode(currentText)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: freqModeLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Frequency
-    TextField {
-        id: frequency
-        onAccepted: {
-            GenProperties._freq(text)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: frequencyLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Symmetry
-    TextField {
-        id: symmetry
-        onAccepted: {
-            GenProperties._symmetry(text)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: symmetryLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // Burst Count
-    TextField {
-        id: burstCnt
-        onAccepted: {
-            GenProperties._burst_cnt(text)
-            reloadChSettings()
-        }
-
-        background: Rectangle {
-            implicitWidth: burstCntLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-    // arbitrary signal
-    Button {
-        text: "Load"
-        onClicked: arbSignalDialog.open()
-
-        background: Rectangle {
-            implicitWidth: arbSignalLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-    FileDialog {
-        id: arbSignalDialog
-         nameFilters: ["Comma-separated values (*.csv)", "JSON Files (*.json)"]
-        //currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-        onAccepted: {
-            GenProperties._arb_data(selectedFile)
-            reloadChSettings()
-        }
-    }
-
-    Component.onCompleted: {
-        reloadChSettings()
-    }
-
-    function reloadChSettings(){
+    onReloadGenChannelSettings: function() {
         GenProperties._sig_types_avail()
         GenProperties._amp(NaN)
         GenProperties._is_amp_auto_range(NaN)
@@ -292,103 +17,221 @@ GridLayout {
         GenProperties._burst_cnt(NaN)
     }
 
+    RowLayout {
+        // Inverted Output not supported
+        // Phase not supported
+        // Pulse Width not supported
+        // Burst Sample Count not supported
+        // Burst Segment Count not supported
 
-    Connections {
-        target: GenProperties
+        UniswagCombobox {
+            id: mode
 
-        // Signal Type
-        function onSigType(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                sigType.currentIndex = findIndexOfModel(sigType.model, value)
-            }
-        }
-        function onSigTypesAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                sigType.model = value
-            }
-        }
-
-        // Amplitude
-        function onAmp(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                amp.text = ""
-                amp.placeholderText = value
+            labelText: "Mode"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                GenProperties._mode(selectedText)
+                settingsBar.updateDisplayedChannelData()
             }
         }
 
-        // Amplitude Auto Ranging
-        function onIsAmpAutoRange(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                if(value === true){
-                    isAmpAutoRange.checkState = Qt.Checked
-                    isAmpAutoRange.text = "ON"
-                }
-                else {
-                    isAmpAutoRange.checkState = Qt.Unchecked
-                    isAmpAutoRange.text = "OFF"
-                }
+        UniswagCombobox {
+            id: sigType
+
+            labelText: "Signal Type"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                GenProperties._sig_type(selectedText)
+                settingsBar.updateDisplayedChannelData()
             }
         }
 
-        // Offset
-        function onOffset(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                offset.text = ""
-                offset.placeholderText = value
+        UniswagCheckbox {
+            id: isAmpAutoRange
+
+            labelText: "Amplitude Auto Ranging"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(isActive) {
+                GenProperties._is_amp_auto_range(isActive)
+                settingsBar.updateDisplayedChannelData()
             }
         }
 
-        // Frequency
-        function onFreq(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                frequency.text = ""
-                frequency.placeholderText = value
+        UniswagTextfield {
+            id: amp
+
+            labelText: "Amplitude"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._amp(enteredText)
+                settingsBar.updateDisplayedChannelData()
             }
         }
 
-        // Frequency Mode
-        function onFreqMode(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                freqMode.currentIndex = findIndexOfModel(freqMode.model, value)
-            }
-        }
-        function onFreqModesAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                freqMode.model = value
+        UniswagTextfield {
+            id: offset
+
+            labelText: "Offset"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._offset(enteredText)
+                settingsBar.updateDisplayedChannelData()
             }
         }
 
-        // Symmetry
-        function onSymmetry(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                symmetry.text = ""
-                symmetry.placeholderText = value
+        UniswagCombobox {
+            id: freqMode
+
+            labelText: "Frequency Mode"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                GenProperties._freq_mode(selectedText)
+                settingsBar.updateDisplayedChannelData()
             }
         }
 
-        // Mode
-        function onMode(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                mode.currentIndex = findIndexOfModel(mode.model, value)
-            }
-        }
-        function onModesAvail(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                mode.model = value
+        UniswagComboTextfield {
+            id: frequency
+
+            labelText: "Sample Frequency"
+            backgroundColor: settingsBar.backgroundColor
+            list: ["2 MHz", "1 MHz", "100 kHz", "50 kHz", "25 kHz", "10 kHz", "5 kHz", "1 kHz", "500 Hz", "200 Hz", "100 Hz", "50 Hz"]
+            onClickOrConfirm: function(passedText) {
+                let value = functions.detachPrefixedUnit(passedText, ["Hz", "kHz", "MHz"])
+                GenProperties._freq(value)
+                settingsBar.updateDisplayedChannelData()
             }
         }
 
-        // Burst Count
-        function onBurstCnt(device_id, ch_num, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice) && ch_num === signalGenMainRect.selectedChannelNum){
-                burstCnt.text = ""
-                burstCnt.placeholderText = value
+        UniswagTextfield {
+            id: symmetry
+
+            labelText: "Symmetry"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._symmetry(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagTextfield {
+            id: burstCnt
+
+            labelText: "Burst Count"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                GenProperties._burst_cnt(enteredText)
+                settingsBar.updateDisplayedChannelData()
+            }
+        }
+
+        UniswagButton {
+            labelText: "Arbitrary Data"
+            buttonText: "Load"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                // open file dialog
+                arbData.open()
             }
         }
 
     }
+
+    UniswagFiledialog {
+        id: arbData
+
+        filterList: ["Comma-separated values (*.csv)"]
+        onFileSelect: function(fileName) {
+            GenProperties._arb_data(fileName)
+            settingsBar.updateDisplayedChannelData()
+        }
+    }
+
+    Connections {
+        target: GenProperties
+
+        function onMode(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxSelection(mode, value)
+        }
+        function onModesAvail(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxList(mode, value)
+        }
+
+        function onSigType(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxSelection(sigType, value)
+        }
+        function onSigTypesAvail(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxList(sigType, value)
+        }
+
+        function onAmp(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateTextfield(amp, value)
+        }
+
+        function onIsAmpAutoRange(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateCheckbox(isAmpAutoRange, value, "ON", "OFF")
+        }
+
+        function onOffset(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateTextfield(offset, value)
+        }
+
+        function onFreq(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            let listOfIncreasingUnits = ["Hz", "kHz", "MHz"]
+            value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
+            functions.updateComboTextfield(frequency, value)
+        }
+
+        function onFreqMode(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxSelection(freqMode, value)
+        }
+        function onFreqModesAvail(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateComboboxList(freqMode, value)
+        }
+
+        function onSymmetry(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateTextfield(symmetry, value)
+        }
+
+        function onBurstCnt(device_id, ch_num, value) {
+            if (!functions.isSelectedDevice(device_id, ch_num)) {
+                return
+            }
+            functions.updateTextfield(burstCnt, value)
+        }
+    }
+
 }
-
-
-
-

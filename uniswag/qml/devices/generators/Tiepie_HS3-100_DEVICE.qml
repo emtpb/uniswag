@@ -1,74 +1,49 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import "./../../res/customtypes"
 
-GridLayout {
-    columns: 1
-    columnSpacing: 10
+UniswagGenDevSettingsBar {
+    id: settingsBar
 
-    property var background_color: darkModeEnabled? colorPalette.dark : colorPalette.light
-
-    Label {
-        id: startStopLabel
-        text: "Start/Stop"
-    }
-
-    // Start/Stop
-    Button {
-        id: startStop
-        text: ""
-        onClicked: GenProperties._start_n_stop()
-
-        background: Rectangle {
-            implicitWidth: startStopLabel.width
-            implicitHeight: 25
-            radius: 2
-            color: background_color
-            border.color: colorPalette.light
-            border.width: 1
-        }
-    }
-
-
-    Component.onCompleted: {
+    onReloadGeneratorSettings: function() {
         GenProperties._is_running()
     }
 
+    RowLayout {
+        // Trigger Source not supported
+        // Trigger Timer not supported
+
+        UniswagButton {
+            id: startStop
+
+            labelText: "Start/Stop"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function() {
+                GenProperties._start_n_stop()
+            }
+        }
+    }
 
     Connections {
         target: GenProperties
 
         function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
         }
-
     }
 
     Connections {
         target: FrontToBackConnector
 
         function onIsRunning(device_id, value) {
-            if(compareDevices(device_id, signalGenMainRect.selectedDevice)){
-                if(value === true){
-                    startStop.text = "Stop"
-                }
-                else {
-                     startStop.text = "Start"
-                }
+            if (!functions.isSelectedDevice(device_id)) {
+                return
             }
+            functions.updateBinaryButton(startStop, value, "Stop", "Start")
         }
-
     }
+
 }
-
-
-
-
-
