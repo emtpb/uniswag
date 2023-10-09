@@ -7,11 +7,11 @@ UniswagOscDevSettingsBar {
 
     onReloadOscilloscopeSettings: function() {
         OscProperties._is_running()
+        OscProperties._sample_freq(NaN)
         OscProperties._rec_len(NaN)
-        OscProperties._time_base(NaN)
         OscProperties._trig_modes_avail()
-        OscProperties._trig_sweeps_avail()
         OscProperties._trig_slopes_avail()
+        OscProperties._trig_sources_avail()
 
         // Trigger Kinds not supported
         functions.triggerSliderIconUpdate()
@@ -29,13 +29,16 @@ UniswagOscDevSettingsBar {
             }
         }
 
-        UniswagTextfield {
-            id: timeBase
+        UniswagComboTextfield {
+            id: frequency
 
-            labelText: "Time Base"
+            labelText: "Sample Frequency"
             backgroundColor: settingsBar.backgroundColor
-            onConfirm: function(enteredText) {
-                OscProperties._time_base(enteredText)
+            list: ["100 MHz", "50 MHz", "25 MHz", "10 MHz", "5 MHz", "1 MHz", "100 kHz", "50 kHz", "25 kHz", "10 kHz", "5 kHz", "1 kHz", "500 Hz", "200 Hz", "100 Hz", "50 Hz"]
+            onClickOrConfirm: function(passedText) {
+                let value = functions.detachPrefixedUnit(passedText, ["Hz", "kHz", "MHz"])
+                OscProperties._sample_freq(value)
+                settingsBar.updateDisplayedOscData()
             }
         }
 
@@ -50,16 +53,6 @@ UniswagOscDevSettingsBar {
         }
 
         UniswagCombobox {
-            id: triggerSweep
-
-            labelText: "Trigger Sweep"
-            backgroundColor: settingsBar.backgroundColor
-            onClick: function(selectedText) {
-                OscProperties._trig_sweep(selectedText)
-            }
-        }
-
-        UniswagCombobox {
             id: triggerSlope
 
             labelText: "Trigger Slope"
@@ -68,6 +61,17 @@ UniswagOscDevSettingsBar {
                 OscProperties._trig_slope(selectedText)
             }
         }
+
+        UniswagCombobox {
+            id: triggerSource
+
+            labelText: "Trigger Source"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._trig_source(selectedText)
+            }
+        }
+
 
         UniswagButton {
             labelText: "Reset"
@@ -102,13 +106,13 @@ UniswagOscDevSettingsBar {
             functions.updateTextfield(recordLength, value)
         }
 
-        function onTimeBase(device_id, value) {
+        function onSampleFreq(device_id, value) {
             if (!functions.isSelectedDevice(device_id)) {
                 return
             }
-            let listOfIncreasingUnits = ["Sam", "kSam"]
+            let listOfIncreasingUnits = ["Hz", "kHz", "MHz"]
             value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
-            functions.updateComboTextfield(timeBase, value)
+            functions.updateComboTextfield(frequency, value)
         }
 
         function onTrigMode(device_id, value) {
@@ -127,18 +131,6 @@ UniswagOscDevSettingsBar {
             */
         }
 
-        function onTrigSweep(device_id, value) {
-            if (!functions.isSelectedDevice(device_id)) {
-                return
-            }
-            functions.updateComboboxSelection(triggerSweep, value)
-        }
-        function onTrigSweepsAvail(device_id, value) {
-            if (!functions.isSelectedDevice(device_id)) {
-                return
-            }
-            functions.updateComboboxList(triggerSweep, value)
-        }
 
         function onTrigSlope(device_id, value) {
             if (!functions.isSelectedDevice(device_id)) {
@@ -151,6 +143,20 @@ UniswagOscDevSettingsBar {
                 return
             }
             functions.updateComboboxList(triggerSlope, value)
+        }
+
+
+        function onTrigSource(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            functions.updateComboboxSelection(triggerSource, value)
+        }
+        function onTrigSourcesAvail(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            functions.updateComboboxList(triggerSource, value)
         }
 
         function onReset(device_id, value) {

@@ -4,6 +4,7 @@ from uniswag.devices.generators.tektronix_gen import TektronixGen
 from uniswag.devices.generators.tiepie_gen import TiepieGen
 from uniswag.devices.oscilloscopes.keysight_osc import KeysightOsc
 from uniswag.devices.oscilloscopes.math_osc import MathOsc
+from uniswag.devices.oscilloscopes.tektronix_osc import TektronixOsc
 from uniswag.devices.oscilloscopes.tiepie_osc import TiepieOsc
 from uniswag.usb_device_daemon import USBDeviceDaemon
 
@@ -86,7 +87,10 @@ class DeviceManager:
         elif device_vendor == 'Keysight':
             added_devices.append(KeysightOsc(device_id['Name'], device_id['SerNo'], self._device_stopped))
         elif device_vendor == 'Tektronix':
-            added_devices.append(TektronixGen(device_id['Name'], device_id['SerNo']))
+            if device_id['Type'] == 'GEN':
+                added_devices.append(TektronixGen(device_id['Name'], device_id['SerNo']))
+            else:
+                added_devices.append(TektronixOsc(device_id['Name'], device_id['SerNo'], self._device_stopped))
 
         # add the new devices to the device list
         for dev in added_devices:

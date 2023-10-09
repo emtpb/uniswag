@@ -33,6 +33,8 @@ class OscProperties(QtCore.QObject):
     trigSweep = QtCore.Signal('QVariantMap', str)
     trigSlopesAvail = QtCore.Signal('QVariantMap', list)
     trigSlope = QtCore.Signal('QVariantMap', str)
+    trigSourcesAvail = QtCore.Signal('QVariantMap', list)
+    trigSource = QtCore.Signal('QVariantMap', str)
     timeBase = QtCore.Signal('QVariantMap', float)
 
     # signals that indicate a channel property access has been completed,
@@ -441,6 +443,25 @@ class OscProperties(QtCore.QObject):
             device.trig_slope = value
         result = device.trig_slope
         self.trigSlope.emit(device.id, result)
+
+    @QtCore.Slot()
+    def _trig_sources_avail(self):
+        self.front_to_back_connector.access_osc_property(self._trig_sources_avail_thread)
+
+    def _trig_sources_avail_thread(self, device):
+        result = device.trigger_sources_avail
+        self.trigSourcesAvail.emit(device.id, result)
+        self._trig_source_thread(device, None)
+
+    @QtCore.Slot(str)
+    def _trig_source(self, value):
+        self.front_to_back_connector.access_osc_property(self._trig_source_thread, value)
+
+    def _trig_source_thread(self, device, value):
+        if value is not None:
+            device.trigger_source = value
+        result = device.trigger_source
+        self.trigSource.emit(device.id, result)
 
     @QtCore.Slot(str)
     def _time_base(self, value):

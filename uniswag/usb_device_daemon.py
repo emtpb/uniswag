@@ -1,5 +1,7 @@
 from sys import platform
 
+import tektronixosc
+
 if platform == 'linux':
     import pyudev
 elif platform == 'win32':
@@ -221,7 +223,7 @@ class USBDeviceDaemon:
 
                         # try to detect all currently connected devices of this vendor in a time frame of 10 seconds
                         dev_list_raw = self._get_non_formatted_device_list(
-                            handyscope.DeviceList().get_overview, registered_dev_list, 10)
+                            [handyscope.DeviceList().get_overview], registered_dev_list, 10)
 
                         # prettify the list of all currently connected devices of this vendor
                         dev_list_formatted = []
@@ -243,7 +245,7 @@ class USBDeviceDaemon:
 
                         # try to detect all currently connected devices of this vendor in a time frame of 10 seconds
                         dev_list_raw = self._get_non_formatted_device_list(
-                            keysightosc.list_connected_keysight_oscilloscopes, registered_dev_list, 10)
+                            [keysightosc.list_connected_keysight_oscilloscopes], registered_dev_list, 10)
 
                         # prettify the list of all currently connected devices of this vendor
                         dev_list_formatted = []
@@ -258,21 +260,24 @@ class USBDeviceDaemon:
                         # the list of all currently connected devices with the list of already registered devices
                         self._add_new_device(dev_list_formatted, registered_dev_list, 'Keysight', device_path)
 
-                    elif 'TEKTRONIX' in dev_vendor_info:
+                    # Tektronix devices
+                    elif '0699' in dev_vendor_info:
 
                         # get all the devices of this vendor that are already registered within the device list
                         registered_dev_list = self._devices_filtered_by_vendor('Tektronix')
 
                         # try to detect all currently connected devices of this vendor in a time frame of 10 seconds
                         dev_list_raw = self._get_non_formatted_device_list(
-                            tektronixsg.list_connected_tektronix_generators, registered_dev_list, 10)
+                            [tektronixsg.list_connected_tektronix_generators,
+                             tektronixosc.list_connected_tektronix_oscilloscopes], registered_dev_list, 10)
 
                         # prettify the list of all currently connected devices of this vendor
                         dev_list_formatted = []
                         for dev in dev_list_raw:
                             short_id = {
                                 'Name': dev['Model'],
-                                'SerNo': dev['Serial Number']
+                                'SerNo': dev['Serial Number'],
+                                'Type': 'OSC' if 'TBS' in dev['Model'] else 'GEN'
                             }
                             dev_list_formatted.append(short_id)
 
@@ -404,7 +409,8 @@ class USBDeviceDaemon:
 
                 short_id = {
                     'Name': plugged_in_device['Name'],
-                    'SerNo': plugged_in_device['SerNo']
+                    'SerNo': plugged_in_device['SerNo'],
+                    'Type': plugged_in_device['Type']
                 }
                 self._usb_list['ShortID'].append(short_id)
                 self._usb_list['Vendor'].append(device_vendor)
@@ -416,13 +422,13 @@ class USBDeviceDaemon:
                 break
 
     @staticmethod
-    def _get_non_formatted_device_list(library_function_for_getting_devices, registered_devices, timeout):
+    def _get_non_formatted_device_list(library_functions_for_getting_devices, registered_devices, timeout):
         """
         Invokes the passed callback function to obtain the library-specific list of currently connected devices.
 
         Args:
-            library_function_for_getting_devices (function):
-                The callback function that returns the list of currently connected devices from the desired vendor.
+            library_functions_for_getting_devices (list(function)):
+                The callback functions which return the list of currently connected devices from the desired vendor.
             registered_devices (list[dict[str, str]]):
                 Used for reference to determine, if the obtained library-specific device list is complete.
                 There should be at least one more device connected via USB than currently registered.
@@ -444,8 +450,9 @@ class USBDeviceDaemon:
 
             time.sleep(0.5)
             try:
-                # invoke callback function to obtain the library-specific device list
-                connected_devices_raw = library_function_for_getting_devices()
+                for function in library_functions_for_getting_devices:
+                    # invoke callback function to obtain the library-specific device list
+                    connected_devices_raw += function()
 
             except OSError as e:
                 # reset library-specific device list if encountering an error

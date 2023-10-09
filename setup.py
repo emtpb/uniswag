@@ -32,6 +32,7 @@ setup(
     install_requires=[
         'handyscope',
         'keysightosc',
+        'tektronixosc',
         'numpy',
         'PySide6',
         'pyusb',
