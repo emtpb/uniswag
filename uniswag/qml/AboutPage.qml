@@ -34,7 +34,7 @@ ApplicationWindow {
                     text: "Paderborn University"
                 }
                 Label {
-                    text: "bmecke@mail.upb.de"
+                    text: "info@bmecke.de"
                 }
             }
 
@@ -47,7 +47,7 @@ ApplicationWindow {
                     text: "Paderborn University"
                 }
                 Label {
-                    text: "erickon@mail.upb.de"
+                    text: "eric.kondratenko@web.de"
                 }
             }
         }

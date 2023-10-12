@@ -181,10 +181,17 @@ Rectangle {
                         spacing: 10
                         clip: true
 
-                        Label {
-                            text: qsTr("Oscilloscope:")
-                            visible: oscilloscopeLoader.active
+                        Rectangle{
+                            width: 60
+                            height: deviceTextLabel.contentHeight
+                            color: "transparent"
+                            Label {
+                                id: deviceTextLabel
+                                text: qsTr("Device:")
+                                visible: oscilloscopeLoader.active
+                            }
                         }
+
                         Item {
                             Layout.fillWidth: true
                             implicitHeight: 60
@@ -211,10 +218,17 @@ Rectangle {
                         spacing: 10
                         clip: true
 
-                        Label {
-                            text: qsTr("Channel:")
-                            visible: oscilloscopeChannelLoader.active
+                        Rectangle{
+                            width: 60
+                            height: channelTextLabel.contentHeight
+                            color: "transparent"
+                            Label {
+                                id: channelTextLabel
+                                text: qsTr("Channel " + selectedChannelNum + ":")
+                                visible: oscilloscopeChannelLoader.active
+                            }
                         }
+
                         Item {
                             Layout.fillWidth: true
                             implicitHeight: 60

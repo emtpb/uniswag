@@ -61,7 +61,7 @@ class TiepieOsc(Oscilloscope):
     def _retrieve_new_data(self):
         while True:
             # limit loop execution speed by waiting inbetween iterations
-            self._data_retrieval_speed_limiter.acquire(timeout=0.001)
+            self._data_retrieval_speed_limiter.acquire(timeout=0.01)
 
             # assert that the oscilloscope is not stopped mid-measurement
             self._mutex_running.acquire()
@@ -71,12 +71,11 @@ class TiepieOsc(Oscilloscope):
             if self._osc.is_running or self._data_not_fetched_from_last_run:
                 self._mutex_dev_access.release()
 
-                self._data_not_fetched_from_last_run = False
-
                 self._mutex_dev_access.acquire()
 
                 # ensure that the oscilloscope is ready to have its data retrieved
                 if self._osc.is_data_ready:
+                    self._data_not_fetched_from_last_run = False
 
                     self._mutex_dev_access.release()
 

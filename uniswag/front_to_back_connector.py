@@ -553,6 +553,7 @@ class FrontToBackConnector(QtCore.QObject):
         Optionally, the graph axis limits are set to the smallest resp. biggest overall data value.
         """
         while True:
+            time.sleep(0.05)
             norm_x_min = norm_x_max = norm_y_min = norm_y_max = None
             fft_x_min = fft_x_max = fft_y_min = fft_y_max = None
 

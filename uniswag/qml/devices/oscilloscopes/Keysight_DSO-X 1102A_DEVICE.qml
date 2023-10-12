@@ -106,9 +106,7 @@ UniswagOscDevSettingsBar {
             if (!functions.isSelectedDevice(device_id)) {
                 return
             }
-            let listOfIncreasingUnits = ["Sam", "kSam"]
-            value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
-            functions.updateComboTextfield(timeBase, value)
+            functions.updateTextfield(timeBase, value)
         }
 
         function onTrigMode(device_id, value) {

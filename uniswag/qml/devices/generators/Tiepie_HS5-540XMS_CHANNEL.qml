@@ -93,7 +93,8 @@ UniswagGenChSettingsBar {
         UniswagComboTextfield {
             id: frequency
 
-            labelText: "Sample Frequency"
+            labelText: "Frequency"
+            widthExtension: 30
             backgroundColor: settingsBar.backgroundColor
             list: ["2 MHz", "1 MHz", "100 kHz", "50 kHz", "25 kHz", "10 kHz", "5 kHz", "1 kHz", "500 Hz", "200 Hz", "100 Hz", "50 Hz"]
             onClickOrConfirm: function(passedText) {

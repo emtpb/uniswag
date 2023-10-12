@@ -230,7 +230,8 @@ class USBDeviceDaemon:
                         for dev in dev_list_raw:
                             short_id = {
                                 'Name': dev['Name'],
-                                'SerNo': str(dev['SerNo'])
+                                'SerNo': str(dev['SerNo']),
+                                'Type': 'OSC'
                             }
                             dev_list_formatted.append(short_id)
 
@@ -252,7 +253,8 @@ class USBDeviceDaemon:
                         for dev in dev_list_raw:
                             short_id = {
                                 'Name': dev['Model'],
-                                'SerNo': dev['Serial Number']
+                                'SerNo': dev['Serial Number'],
+                                'Type': 'OSC'
                             }
                             dev_list_formatted.append(short_id)
 

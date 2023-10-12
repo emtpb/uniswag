@@ -8,7 +8,7 @@ import "res/devicelist/"
 
 /*!
     \qmltype Rectangle
-    \brief The main view containing all views for oscilloscopes.
+    \brief The main view containing all views for signal generators.
 
     This rectangle shows all the stuff that is displayed when the "Signal Generators" tab is clicked in the TapBar.
 */
@@ -106,7 +106,7 @@ Rectangle {
             ColumnLayout{
                 Layout.fillWidth: true
 
-                //! The oscilloscope settings
+                //! The signal generator settings
                 Rectangle{
                     Layout.fillWidth: true
                     height: 60
@@ -119,10 +119,17 @@ Rectangle {
                         spacing: 10
                         clip: true
 
-                        Label {
-                            text: qsTr("Oscilloscope:")
-                            visible: signalGenLoader.active
+                        Rectangle{
+                            width: 60
+                            height: deviceTextLabel.contentHeight
+                            color: "transparent"
+                            Label {
+                                id: deviceTextLabel
+                                text: qsTr("Device:")
+                                visible: signalGenLoader.active
+                            }
                         }
+
                         Item {
                             Layout.fillWidth: true
                             implicitHeight: 60
@@ -149,10 +156,17 @@ Rectangle {
                         spacing: 10
                         clip: true
 
-                        Label {
-                            text: qsTr("Channel:")
-                            visible: signalGenChannelLoader.active
+                        Rectangle{
+                            width: 60
+                            height: channelTextLabel.contentHeight
+                            color: "transparent"
+                            Label {
+                                id: channelTextLabel
+                                text: qsTr("Channel " + selectedChannelNum + ":")
+                                visible: signalGenChannelLoader.active
+                            }
                         }
+
                         Item {
                             Layout.fillWidth: true
                             implicitHeight: 60

@@ -64,6 +64,6 @@ setup(
     include_package_data=True,
 
     entry_points={
-        'console_scripts': ['UniSWAG=uniswag.main:main'],
+        'console_scripts': ['uniswag=uniswag.main:main'],
     },
 )

@@ -117,7 +117,7 @@ UniswagOscDevSettingsBar {
 
             labelText: "Record length"
             backgroundColor: settingsBar.backgroundColor
-            widthExtension: 20
+            widthExtension: 25
             list: ["100 kSam", "50 kSam", "20 kSam", "10 kSam", "5 kSam", "2 kSam", "1 kSam", "500 Sam", "200 Sam", "100 Sam", "50 Sam"]
             onClickOrConfirm: function(passedText) {
                 let value = functions.detachPrefixedUnit(passedText, ["Sam", "kSam"])

@@ -65,6 +65,7 @@ UniswagGenChSettingsBar {
             id: frequency
 
             labelText: "Frequency"
+            widthExtension: 30
             backgroundColor: settingsBar.backgroundColor
             onConfirm: function(enteredText) {
                 GenProperties._freq(enteredText)
