@@ -1,5 +1,6 @@
 from sys import platform
 
+import hantekosc as hantekosc
 import tektronixosc
 
 if platform == 'linux':
@@ -286,6 +287,28 @@ class USBDeviceDaemon:
                         # register the new device to the device list by comparing
                         # the list of all currently connected devices with the list of already registered devices
                         self._add_new_device(dev_list_formatted, registered_dev_list, 'Tektronix', device_path)
+
+                    elif 'Cypress Semiconductor Corp.' in dev_vendor_info or 'OpenHantek' in dev_vendor_info:
+                        # get all the devices of this vendor that are already registered within the device list
+                        registered_dev_list = self._devices_filtered_by_vendor('Hantek')
+
+                        # try to detect all currently connected devices of this vendor in a time frame of 10 seconds
+                        dev_list_raw = self._get_non_formatted_device_list(
+                            [hantekosc.list_connected_hantek_devices], registered_dev_list, 10)
+
+                        # prettify the list of all currently connected devices of this vendor
+                        dev_list_formatted = []
+                        for dev in dev_list_raw:
+                            short_id = {
+                                'Name': dev['Model'],
+                                'SerNo': dev['Serial Number'],
+                                'Type': 'OSC'
+                            }
+                            dev_list_formatted.append(short_id)
+
+                        # register the new device to the device list by comparing
+                        # the list of all currently connected devices with the list of already registered devices
+                        self._add_new_device(dev_list_formatted, registered_dev_list, 'Hantek', device_path)
 
                     # for all VISA devices on Windows only
                     elif 'IVI Foundation, Inc' in dev_vendor_info and platform == 'win32':

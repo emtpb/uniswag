@@ -17,8 +17,8 @@ setup(
 
     description='"Universal Signal Waveform Acquisition & Generation" is a GUI-based software for controlling oscilloscopes and signal generators from a variety of vendors.',
     long_description=long_description,
-    author='Eric Kondratenko',
-    author_email='erickon@mail.uni-paderborn.de',
+    author='Bruno Mecke',
+    author_email='info@bmecke.de',
     url='https://github.com/emtpb/uniswag/',
     license='BSD',
 
@@ -33,6 +33,7 @@ setup(
         'handyscope',
         'keysightosc',
         'tektronixosc',
+        'hantekosc',
         'numpy',
         'PySide6',
         'pyusb',

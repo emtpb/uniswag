@@ -6,6 +6,7 @@ from uniswag.devices.oscilloscopes.keysight_osc import KeysightOsc
 from uniswag.devices.oscilloscopes.math_osc import MathOsc
 from uniswag.devices.oscilloscopes.tektronix_osc import TektronixOsc
 from uniswag.devices.oscilloscopes.tiepie_osc import TiepieOsc
+from uniswag.devices.oscilloscopes.hantek_osc import HantekOsc
 from uniswag.usb_device_daemon import USBDeviceDaemon
 
 
@@ -91,6 +92,8 @@ class DeviceManager:
                 added_devices.append(TektronixGen(device_id['Name'], device_id['SerNo']))
             else:
                 added_devices.append(TektronixOsc(device_id['Name'], device_id['SerNo'], self._device_stopped))
+        elif device_vendor == 'Hantek':
+            added_devices.append(HantekOsc(device_id['Name'], device_id['SerNo'], self._device_stopped))
 
         # add the new devices to the device list
         for dev in added_devices:
