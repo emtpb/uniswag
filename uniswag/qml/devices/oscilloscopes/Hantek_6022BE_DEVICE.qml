@@ -10,6 +10,7 @@ UniswagOscDevSettingsBar {
         OscProperties._sample_freq(NaN)
         OscProperties._rec_len(NaN)
         OscProperties._pre_sample_ratio(NaN)
+        OscProperties._trig_sources_avail()
     }
 
     RowLayout {
@@ -55,6 +56,16 @@ UniswagOscDevSettingsBar {
             }
         }
 
+        UniswagCombobox {
+            id: triggerSource
+
+            labelText: "Trigger Source"
+            backgroundColor: settingsBar.backgroundColor
+            onClick: function(selectedText) {
+                OscProperties._trig_source(selectedText)
+            }
+        }
+
         UniswagButton {
             id: startStop
 
@@ -93,6 +104,19 @@ UniswagOscDevSettingsBar {
                 return
             }
             functions.updateTextfield(preSampleRatio, value)
+        }
+
+        function onTrigSource(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            functions.updateComboboxSelection(triggerSource, value)
+        }
+        function onTrigSourcesAvail(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            functions.updateComboboxList(triggerSource, value)
         }
 
         function onIsRunning(device_id, value) {

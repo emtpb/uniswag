@@ -273,6 +273,24 @@ class HantekOsc(Oscilloscope):
         self._osc.pre_sample_ratio = value
         self._mutex_dev_access.release()
 
+    @property
+    def trigger_sources_avail(self):
+        return [('Channel ' + str(ch.ch_number + 1)) for ch in self._osc.channels]
+
+    @property
+    def trigger_source(self):
+        self._mutex_dev_access.acquire()
+        selected_channel = self._osc.selected_channel + 1
+        self._mutex_dev_access.release()
+        return 'Channel ' + str(selected_channel)
+
+    @trigger_source.setter
+    def trigger_source(self, value):
+        source = int(value.split()[1])
+        self._mutex_dev_access.acquire()
+        self._osc.selected_channel = source - 1
+        self._mutex_dev_access.release()
+
 
 class HantekOscChannel(OscChannel):
     def __init__(self, name, ch_no, mutex, ch):

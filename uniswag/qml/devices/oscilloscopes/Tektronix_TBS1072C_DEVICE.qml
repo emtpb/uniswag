@@ -12,6 +12,7 @@ UniswagOscDevSettingsBar {
         OscProperties._trig_modes_avail()
         OscProperties._trig_slopes_avail()
         OscProperties._trig_sources_avail()
+        OscProperties._pre_sample_ratio(NaN)
 
         // Trigger Kinds not supported
         functions.triggerSliderIconUpdate()
@@ -26,6 +27,17 @@ UniswagOscDevSettingsBar {
             backgroundColor: settingsBar.backgroundColor
             onConfirm: function(enteredText) {
                 OscProperties._rec_len(enteredText)
+            }
+        }
+
+        UniswagTextfield {
+            id: preSampleRatio
+
+            labelText: "Pre Sample Ratio"
+            backgroundColor: settingsBar.backgroundColor
+            onConfirm: function(enteredText) {
+                OscProperties._pre_sample_ratio(enteredText)
+                settingsBar.updateDisplayedOscData()
             }
         }
 
@@ -113,6 +125,13 @@ UniswagOscDevSettingsBar {
             let listOfIncreasingUnits = ["Hz", "kHz", "MHz"]
             value = functions.appendPrefixedUnit(value, 3, listOfIncreasingUnits)
             functions.updateComboTextfield(frequency, value)
+        }
+
+        function onPreSampleRatio(device_id, value) {
+            if (!functions.isSelectedDevice(device_id)) {
+                return
+            }
+            functions.updateTextfield(preSampleRatio, value)
         }
 
         function onTrigMode(device_id, value) {

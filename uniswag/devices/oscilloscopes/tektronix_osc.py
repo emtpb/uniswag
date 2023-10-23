@@ -277,6 +277,23 @@ class TektronixOsc(Oscilloscope):
         self._mutex_dev_access.release()
 
     @property
+    def pre_sample_ratio(self):
+        self._mutex_dev_access.acquire()
+        result = self._osc.pre_sample_ratio
+        self._mutex_dev_access.release()
+
+        return result
+
+    @pre_sample_ratio.setter
+    def pre_sample_ratio(self, value):
+        # assert that value is within the minimum-maximum-range
+        value = min(1, max(0, value))
+
+        self._mutex_dev_access.acquire()
+        self._osc.pre_sample_ratio = value
+        self._mutex_dev_access.release()
+
+    @property
     def trig_modes_avail(self):
         return list(self.TRIGGER_MODES.keys())
 
