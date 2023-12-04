@@ -6,6 +6,8 @@ generators from a variety of vendors. Supported devices include:
 
 - **Keysight Technologies** DSOX1102A
 - **TiePie engineering** Handyscope HS3 & HS5
+- **Tektronix** TBS1072C
+- **Hantek** 6022BE/BL
 - **Tektronix** AFG1022
 
 Most prominent features are:
@@ -18,14 +20,10 @@ Most prominent features are:
 - Hot plugging support - devices can be inserted or removed during runtime
 - Runs on both *Linux* and *Windows*
 
-Usage
------
-
-After package installation you can launch the application via the command line:
-
-::
-
-   UniSWAG
+.. image:: docs/images/osc_settings.gif
+  :width: 90%
+  :align: center
+  :alt: Settings to control the oscilloscopes
 
 Extending the software
 ----------------------
