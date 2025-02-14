@@ -7,20 +7,20 @@ from uniswag.devices.oscilloscope import Oscilloscope, OscChannel
 class TektronixOsc(Oscilloscope):
 
     TRIGGER_MODES = {
-        'Edge': 'EDGE',
-        'Pulse': 'PULSE'
+        'Edge': 'edge',
+        'Pulse': 'pulse'
     }
 
     TRIGGER_SLOPES = {
-        'Rising edge': 'RISE',
-        'Falling edge': 'FALL'
+        'Rising edge': 'rising',
+        'Falling edge': 'falling'
     }
 
     TRIGGER_SOURCES = {
-        'Channel 1': 'CH1',
-        'Channel 2': 'CH2',
-        'Line': 'LINE',
-        'Aux': 'AUX'
+        'Channel 1': 'ch1',
+        'Channel 2': 'ch2',
+        'Line': 'line',
+        'Aux': 'aux'
     }
 
     def __init__(self, name, ser_no, was_stopped_callback):
@@ -59,7 +59,7 @@ class TektronixOsc(Oscilloscope):
         # halt the oscilloscope's measurement initially
         self._is_running = False
 
-        self._osc.data_source = 'CH1'
+        self._osc.data_source = 'ch1'
 
         # start the thread that continuously retrieves new measurement data while the oscilloscope is running
         self._new_data_retrieval_thread.start()
@@ -354,8 +354,8 @@ class TektronixOsc(Oscilloscope):
 class TektronixOscChannel(OscChannel):
 
     COUPLINGS = {
-        'AC': 'AC',
-        'DC': 'DC'
+        'AC': 'ac',
+        'DC': 'dc'
     }
 
     def __init__(self, name, ch_no, mutex, ch):
