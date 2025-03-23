@@ -89,33 +89,37 @@ RowLayout{
             }
 
             // Triangle
-            ColorImage {
+            Image {
+                id: sourceImage
                 sourceSize.width: 20
                 sourceSize.height: 20
                 source: misc_path + "triangle.png"
-                color: control.pressed ? colorPalette.highlight : colorPalette.text
+                //ToDo: Find a solution to change the color of the image
+                //color: control.pressed ? colorPalette.highlight : colorPalette.text
                 visible: (triggerMode === "triangle") ? true: false
             }
 
 
             // In- or Outwindow
-            ColorImage {
+            Image {
                 anchors.bottom: rect1.top
                 anchors.horizontalCenter: rect1.horizontalCenter
                 sourceSize.width: 20
                 sourceSize.height: 20
                 source: misc_path + "triangle.png"
-                color: control.pressed ? colorPalette.highlight : colorPalette.text
+                //ToDo: Find a solution to change the color of the image
+                //color: control.pressed ? colorPalette.highlight : colorPalette.text
                 visible: (triggerMode === "out window" || triggerMode === "in window") ? true: false
                 rotation: (triggerMode === "out window")? -90: 90
             }
-            ColorImage {
+            Image {
                 anchors.top: rect1.bottom
                 anchors.horizontalCenter: rect1.horizontalCenter
                 sourceSize.width: 20
                 sourceSize.height: 20
                 source: misc_path + "triangle.png"
-                color: control.pressed ? colorPalette.highlight : colorPalette.text
+                //ToDo: Find a solution to change the color of the image
+                //color: control.pressed ? colorPalette.highlight : colorPalette.text
                 visible: (triggerMode === "out window" || triggerMode === "in window") ? true: false
                 rotation: (triggerMode === "out window")? 90: -90
             }

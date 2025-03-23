@@ -82,12 +82,13 @@ ItemDelegate {
 
                 The advantage of the ColorImage is that the color of the icon can be changed (for Darkmode).
             */
-            ColorImage {
+            Image {
                 id: expandButton
                 sourceSize.width: 20
                 sourceSize.height: 20
                 source: misc_path + "right.png"
-                color: colorPalette.text
+                //ToDo: Find a solution to change the color of the image
+                //color: colorPalette.text
 
                 MouseArea {
                     anchors.fill: parent

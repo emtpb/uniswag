@@ -22,13 +22,14 @@ Rectangle {
     border.color: darkModeEnabled? "white" : "black"
 
     // checked
-    ColorImage {
+    Image {
         id: colorImage
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         sourceSize.width: 16
         sourceSize.height: 16
-        color: darkModeEnabled? "white" : "black"
+        //ToDo: Find a solution to change the color of the image
+        //color: darkModeEnabled? "white" : "black"
         source: misc_path + "tick.png"
         visible: false
     }
